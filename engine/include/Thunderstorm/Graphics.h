@@ -5,6 +5,8 @@
 
 #define OPENGL_LOG_STRING_SIZE 2048
 
+void GLEnableDebug();
+
 // NOTE: only accepts spirv byte-code
 // NOTE: returns 0 and sets error on fail
 u32 GLCreateShader(void* shader, usize shaderSize, u32 shaderType, c8* error);

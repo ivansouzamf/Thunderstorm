@@ -1,6 +1,10 @@
 add_rules("mode.debug", "mode.release")
 add_requires("libsdl", "libepoxy", "glslang")
 
+if is_mode("debug") then 
+    add_defines("DEBUG")
+end
+
 target("engine")
     -- set basic project settings
     set_basename("thunderstorm")

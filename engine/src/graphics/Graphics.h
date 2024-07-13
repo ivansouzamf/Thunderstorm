@@ -10,6 +10,8 @@
 
 #define OPENGL_LOG_STRING_SIZE 2048
 
+THUNDERSTORM_API void GLEnableDebug();
+
 // NOTE: only accepts spirv byte-code
 // NOTE: returns 0 and sets error on fail
 THUNDERSTORM_API u32 GLCreateShader(void* shader, usize shaderSize, u32 shaderType, c8* error);

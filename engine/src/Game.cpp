@@ -52,14 +52,18 @@ void Game::Initialize()
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Loaded OpenGL version: %s", glGetString(GL_VERSION));
     
     // setup some opengl stuff
-    /*
     {
+        #ifdef DEBUG
+            GLEnableDebug();
+        #endif
+        /* 
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_STENCIL_TEST);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    } */
+        */
+    }
 
     m_application.Initialize();
 }

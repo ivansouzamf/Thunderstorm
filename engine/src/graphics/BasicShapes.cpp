@@ -35,5 +35,5 @@ void GLDrawTriangle(u32 vertexArray)
 {
     glBindVertexArray(vertexArray);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(vertexArray); // unbind
+    glBindVertexArray(0); // unbind
 }
