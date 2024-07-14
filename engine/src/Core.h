@@ -5,7 +5,7 @@
 #include <vector>
 #include "Defines.h"
 
-namespace Game {
+namespace Core {
     static std::string requiredExtensions[] = {
         "GL_ARB_gl_spirv",
         "GL_ARB_direct_state_access",

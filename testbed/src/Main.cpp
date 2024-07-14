@@ -1,5 +1,5 @@
 #include <Thunderstorm/Types.h>
-#include <Thunderstorm/Game.h>
+#include <Thunderstorm/Core.h>
 #include <Thunderstorm/Graphics.h>
 
 static u32 triangle;
@@ -24,14 +24,14 @@ void Render(f32 delta)
 
 s32 main(s32 argc, c8* argv[])
 {
-    Game::Application application = {
+    Core::Application application = {
         Initialize,
         Deinitialize,
         Update,
         Render,
     };
 
-    Game::Game game = Game::Game(application);
+    Core::Game game = Core::Game(application);
     game.Run();
 
     exit(0);

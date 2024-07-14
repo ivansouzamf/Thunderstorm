@@ -4,19 +4,19 @@
 #include <epoxy/gl.h>
 #include "graphics/Graphics.h"
 
-#include "Game.h"
+#include "Core.h"
 
-Game::Game::Game(Application application)
+Core::Game::Game(Application application)
 {
     m_application = application;
 }
 
-Game::Game::Game(Application application, WindowSettings settings) : Game(application)
+Core::Game::Game(Application application, WindowSettings settings) : Game(application)
 {
     SetWindowSettings(settings);
 }
 
-void Game::Game::Initialize()
+void Core::Game::Initialize()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Initializing..."); 
 
@@ -74,7 +74,7 @@ void Game::Game::Initialize()
     m_application.Initialize();
 }
 
-void Game::Game::Deinitialize()
+void Core::Game::Deinitialize()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Deinitializing...");
     m_application.Deinitialize();
@@ -83,7 +83,7 @@ void Game::Game::Deinitialize()
     SDL_Quit();
 }
 
-void Game::Game::Update()
+void Core::Game::Update()
 {
     // delta && timing stuff
     static u64 lastTime = 0;
@@ -95,7 +95,7 @@ void Game::Game::Update()
     m_application.Update(m_delta);
 }
 
-void Game::Game::Render()
+void Core::Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     m_application.Render(m_delta);
@@ -103,7 +103,7 @@ void Game::Game::Render()
     SDL_GL_SwapWindow(m_window);
 }
 
-void Game::Game::Run()
+void Core::Game::Run()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Hello from '%s'", m_windowTitle.c_str());
 
@@ -138,7 +138,7 @@ void Game::Game::Run()
     Deinitialize();
 }
 
-void Game::Game::SetWindowSettings(WindowSettings settings)
+void Core::Game::SetWindowSettings(WindowSettings settings)
 {
     m_windowWidth = settings.width;
     m_windowHeight = settings.height;
@@ -150,7 +150,7 @@ void Game::Game::SetWindowSettings(WindowSettings settings)
     }
 }
 
-std::string Game::Game::CheckGLExtensions()
+std::string Core::Game::CheckGLExtensions()
 {
     for (auto extension : m_glExtensions) {
         if (epoxy_has_gl_extension(extension.c_str())) {

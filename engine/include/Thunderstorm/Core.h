@@ -3,7 +3,7 @@
 #include <string>
 #include "Types.h"
 
-namespace Game {
+namespace Core {
     struct WindowSettings {
         u16 width;
         u16 height;
