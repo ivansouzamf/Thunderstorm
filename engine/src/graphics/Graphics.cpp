@@ -76,7 +76,7 @@ void APIENTRY GLDebugCallback(u32 source, u32 type, u32 id, u32 severity, s32 le
     }
 }
 
-void GLEnableDebug()
+void Graphics::GLEnableDebug()
 {
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

@@ -6,17 +6,17 @@
 
 #include "Game.h"
 
-Game::Game(Application application)
+Game::Game::Game(Application application)
 {
     m_application = application;
 }
 
-Game::Game(Application application, WindowSettings settings) : Game(application)
+Game::Game::Game(Application application, WindowSettings settings) : Game(application)
 {
     SetWindowSettings(settings);
 }
 
-void Game::Initialize()
+void Game::Game::Initialize()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Initializing..."); 
 
@@ -60,7 +60,7 @@ void Game::Initialize()
     // setup some opengl stuff
     {
         #ifdef DEBUG
-            GLEnableDebug();
+            Graphics::GLEnableDebug();
         #endif
         /* 
         glCullFace(GL_BACK);
@@ -74,7 +74,7 @@ void Game::Initialize()
     m_application.Initialize();
 }
 
-void Game::Deinitialize()
+void Game::Game::Deinitialize()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Deinitializing...");
     m_application.Deinitialize();
@@ -83,7 +83,7 @@ void Game::Deinitialize()
     SDL_Quit();
 }
 
-void Game::Update()
+void Game::Game::Update()
 {
     // delta && timing stuff
     static u64 lastTime = 0;
@@ -95,7 +95,7 @@ void Game::Update()
     m_application.Update(m_delta);
 }
 
-void Game::Render()
+void Game::Game::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     m_application.Render(m_delta);
@@ -103,7 +103,7 @@ void Game::Render()
     SDL_GL_SwapWindow(m_window);
 }
 
-void Game::Run()
+void Game::Game::Run()
 {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Hello from '%s'", m_windowTitle.c_str());
 
@@ -138,7 +138,7 @@ void Game::Run()
     Deinitialize();
 }
 
-void Game::SetWindowSettings(WindowSettings settings)
+void Game::Game::SetWindowSettings(WindowSettings settings)
 {
     m_windowWidth = settings.width;
     m_windowHeight = settings.height;
@@ -150,7 +150,7 @@ void Game::SetWindowSettings(WindowSettings settings)
     }
 }
 
-std::string Game::CheckGLExtensions()
+std::string Game::Game::CheckGLExtensions()
 {
     for (auto extension : m_glExtensions) {
         if (epoxy_has_gl_extension(extension.c_str())) {

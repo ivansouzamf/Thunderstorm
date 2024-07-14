@@ -2,7 +2,7 @@
 
 #include "Graphics.h"
 
-u32 GLCreateTriangle()
+u32 Graphics::GLCreateTriangle()
 {
     f32 vertices[] = {
         -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -27,13 +27,13 @@ u32 GLCreateTriangle()
     glVertexArrayAttribBinding(vertexArray, 0, 0);
     glVertexArrayAttribBinding(vertexArray, 1, 0);
 
-    u32 program = GLCreateProgramFromFile("default.vert.glsl.spv", "default.frag.glsl.spv");
+    u32 program = Graphics::GLCreateProgramFromFile("default.vert.glsl.spv", "default.frag.glsl.spv");
     glUseProgram(program);
 
     return vertexArray;
 }
 
-void GLDrawTriangle(u32 vertexArray)
+void Graphics::GLDrawTriangle(u32 vertexArray)
 {
     glBindVertexArray(vertexArray);
     glDrawArrays(GL_TRIANGLES, 0, 3);

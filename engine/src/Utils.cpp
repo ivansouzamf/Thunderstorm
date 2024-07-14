@@ -5,16 +5,16 @@
 
 #include "Utils.h"
 
-InMemoryFile::InMemoryFile()
+Utils::InMemoryFile::InMemoryFile()
 {
 }
 
-InMemoryFile::InMemoryFile(std::filesystem::path filePath)
+Utils::InMemoryFile::InMemoryFile(std::filesystem::path filePath)
 {
     Load(filePath);
 }
 
-b8 InMemoryFile::IsLoaded()
+b8 Utils::InMemoryFile::IsLoaded()
 {
     if (m_content == nullptr || m_size <= 0) {
         return false;
@@ -23,7 +23,7 @@ b8 InMemoryFile::IsLoaded()
     return true;
 }
 
-b8 InMemoryFile::Load(std::filesystem::path filePath)
+b8 Utils::InMemoryFile::Load(std::filesystem::path filePath)
 {
     Unload();
 
@@ -48,7 +48,7 @@ b8 InMemoryFile::Load(std::filesystem::path filePath)
     return true;
 }
 
-void InMemoryFile::Unload()
+void Utils::InMemoryFile::Unload()
 {
     if (IsLoaded()) {
         std::free(m_content);
@@ -57,18 +57,18 @@ void InMemoryFile::Unload()
     }
 }
 
-void* InMemoryFile::GetContent()
+void* Utils::InMemoryFile::GetContent()
 {
     return m_content;
 }
 
-usize InMemoryFile::GetSize()
+usize Utils::InMemoryFile::GetSize()
 {
     return m_size;
 }
 
 
-std::filesystem::path GetExePath()
+std::filesystem::path Utils::GetExePath()
 {
     std::filesystem::path path = "";
     c8* tempPath = nullptr;
