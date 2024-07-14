@@ -1,10 +1,8 @@
 #pragma once
 
+#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
-#include <SDL2/SDL.h>
-#include <epoxy/gl.h>
-#include "graphics/Graphics.h"
 #include "Defines.h"
 
 static std::string requiredExtensions[] = {

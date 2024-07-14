@@ -1,9 +1,6 @@
 #pragma once
 
-#include <cstdlib>
-#include <fstream>
 #include <filesystem>
-#include <SDL2/SDL.h>
 #include "Defines.h"
 
 class THUNDERSTORM_API InMemoryFile {

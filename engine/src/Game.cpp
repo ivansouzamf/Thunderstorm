@@ -1,3 +1,9 @@
+#include <string>
+#include <vector>
+#include <SDL2/SDL.h>
+#include <epoxy/gl.h>
+#include "graphics/Graphics.h"
+
 #include "Game.h"
 
 Game::Game(Application application)

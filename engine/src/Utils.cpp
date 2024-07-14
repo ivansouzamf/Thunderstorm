@@ -1,3 +1,8 @@
+#include <SDL2/SDL.h>
+#include <filesystem>
+#include <cstdlib>
+#include <fstream>
+
 #include "Utils.h"
 
 InMemoryFile::InMemoryFile()

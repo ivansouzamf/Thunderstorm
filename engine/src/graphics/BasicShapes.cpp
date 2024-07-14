@@ -1,4 +1,6 @@
-#include "_BasicShapes.h"
+#include <epoxy/gl.h>
+
+#include "Graphics.h"
 
 u32 GLCreateTriangle()
 {
