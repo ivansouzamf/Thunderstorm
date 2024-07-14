@@ -63,15 +63,15 @@ void APIENTRY GLDebugCallback(u32 source, u32 type, u32 id, u32 severity, s32 le
     // switch debug level
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH: {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL_LOG id: %d, type: %s, source: %s] %s", id, _type, _source, message); 
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL] id: %d, type: %s, source: %s, message: %s", id, _type, _source, message); 
         } break;
 
         case GL_DEBUG_SEVERITY_MEDIUM: {
-            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL_LOG id: %d, type: %s, source: %s] %s", id, _type, _source, message); 
+            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL] id: %d, type: %s, source: %s, message: %s", id, _type, _source, message); 
         } break;
         
         default: { // handle 'GL_DEBUG_SEVERITY_LOW' and 'GL_DEBUG_SEVERITY_NOTIFICATION'
-            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL_LOG id: %d, type: %s, source: %s] %s", id, _type, _source, message); 
+            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[OPENGL] id: %d, type: %s, source: %s, message: %s", id, _type, _source, message); 
         } break;
     }
 }
