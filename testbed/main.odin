@@ -18,7 +18,7 @@ main :: proc() {
     fg_shader, err = os.read_entire_file_from_filename("default.frag.glsl.spv")
     utils.assert_log(err, "Faild to load fragment shader")
 
-    program_id, error := graphics.load_shader_spirv(raw_data(vs_shader), raw_data(fg_shader), uintptr(len(vs_shader)), uintptr(len(fg_shader)))
+    program_id, error := graphics.load_shader_spirv(raw_data(vs_shader), raw_data(fg_shader), len(vs_shader), len(fg_shader))
     utils.assert_log(bool(error), "Faild to create program")
     gl.UseProgram(program_id)
 

@@ -1,4 +1,4 @@
-package vendor_gl
+package opengl
 
 // Helper for loading shaders into a program
 

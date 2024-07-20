@@ -1,4 +1,4 @@
-package vendor_gl
+package opengl
 
 GL_DEBUG :: #config(GL_DEBUG, ODIN_DEBUG)
 FALSE :: false

@@ -4,7 +4,7 @@ import "core:strings"
 import "core:os"
 import gl "../graphics/opengl"
 
-load_shader_spirv :: proc(vs_spirv, fs_spirv: rawptr, vs_size, fs_size: uintptr) -> (program_id: u32, ok: b8) {
+load_shader_spirv :: proc(vs_spirv, fs_spirv: rawptr, vs_size, fs_size: int) -> (program_id: u32, ok: b8) {
     ok = false
 
     vs_id := compile_shader_from_spirv(vs_spirv, vs_size, .VERTEX_SHADER) or_return
@@ -16,7 +16,7 @@ load_shader_spirv :: proc(vs_spirv, fs_spirv: rawptr, vs_size, fs_size: uintptr)
     return
 }
 
-compile_shader_from_spirv :: proc(shader_data: rawptr, shader_data_size: uintptr, shader_type: gl.Shader_Type) -> (shader_id: u32, ok: b8) {
+compile_shader_from_spirv :: proc(shader_data: rawptr, shader_data_size: int, shader_type: gl.Shader_Type) -> (shader_id: u32, ok: b8) {
     ok = false
     shader_id = gl.CreateShader(u32(shader_type))
     gl.ShaderBinary(1, &shader_id, gl.SHADER_BINARY_FORMAT_SPIR_V, shader_data, i32(shader_data_size))

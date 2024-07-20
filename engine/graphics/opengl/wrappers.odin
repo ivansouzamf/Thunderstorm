@@ -1,4 +1,4 @@
-package vendor_gl
+package opengl
 
 #assert(size_of(bool) == size_of(u8))
 

@@ -1,4 +1,4 @@
-package vendor_gl
+package opengl
 
 loaded_up_to: [2]int
 loaded_up_to_major := 0
