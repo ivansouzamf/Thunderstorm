@@ -16,11 +16,9 @@ check_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c
         
         if log_proc == gl.GetShaderInfoLog {
             utils.log(.Error, "OpenGL shader error. type: %v, error: %s", type, string(error_message[0 : len(error_message) - 1]))
-        }
-        else if log_proc == gl.GetProgramInfoLog {
+        } else if log_proc == gl.GetProgramInfoLog {
             utils.log(.Error, "OpenGL program error. type %v, error: %s", type, string(error_message[0 : len(error_message) - 1]))
-        }
-        else {
+        } else {
         }
 
         return false

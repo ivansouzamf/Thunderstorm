@@ -37,8 +37,7 @@ log :: proc(level: Log_Level, message: string, args: ..any) {
     output: os.Handle
     if u8(level) > 1 {
         output = os.stderr
-    }
-    else {
+    } else {
         output = os.stdout
     }
 

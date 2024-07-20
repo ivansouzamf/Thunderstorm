@@ -10,8 +10,6 @@ main :: proc() {
     core.engine_init(800, 600, "thunderstorm testbed")
     defer core.engine_deinit()
 
-    //utils.assert_log(false, "tester")
-
     err: bool
     vs_shader: []byte
     fg_shader: []byte
