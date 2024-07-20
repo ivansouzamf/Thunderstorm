@@ -1,5 +1,7 @@
 package testbed 
 
+import "core:math/rand"
+import "core:thread"
 import "core:os"
 import "thunderstorm:core"
 import "thunderstorm:graphics"
@@ -9,6 +11,16 @@ import "thunderstorm:utils"
 main :: proc() {
     core.engine_init(800, 600, "thunderstorm testbed")
     defer core.engine_deinit()
+
+    render_thread := thread.create_and_start(testbed_render)
+    
+    for core.engine_running() {
+        core.engine_update()
+    }
+}
+
+testbed_render :: proc() {
+    core.engine_init_render()
 
     err: bool
     vs_shader: []byte
@@ -47,16 +59,18 @@ main :: proc() {
     gl.VertexArrayAttribBinding(vertex_array, 0, 0);
     gl.VertexArrayAttribBinding(vertex_array, 1, 0);
     
-    gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-    
     for core.engine_running() {
-        core.engine_update()
+        r := rand.float32()
+        g := rand.float32()
+        b := rand.float32()
+        gl.ClearColor(r, g, b, 1.0)
         
         gl.Clear(gl.COLOR_BUFFER_BIT)
+        
         gl.BindVertexArray(vertex_array)
         gl.DrawArrays(gl.TRIANGLES, 0, 3)
         gl.BindVertexArray(0)
         
         core.engine_display()
-    }    
+    }
 }

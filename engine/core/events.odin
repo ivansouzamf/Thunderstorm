@@ -1,8 +1,8 @@
 package core
 
-import gl "../graphics/opengl"
-import "../utils"
 import "vendor:sdl2"
+import "../utils"
+import gl "../graphics/opengl"
 
 @(private)
 process_events :: proc() {
@@ -30,7 +30,6 @@ process_events :: proc() {
                 if window_event.event == .RESIZED {
                     engine_runtime.window_width = window_event.data1
                     engine_runtime.window_height = window_event.data2
-                    gl.Viewport(0, 0, window_event.data1, window_event.data2)
 
                     utils.log(.Info, "The window has been resized. New size: %v X %v", engine_runtime.window_width, engine_runtime.window_height)
                 }
