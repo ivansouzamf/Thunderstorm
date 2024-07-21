@@ -9,7 +9,7 @@ import gl "../graphics/opengl"
 @(private)
 engine_runtime: struct {
     window: ^sdl2.Window,
-    window_GL_context, init_GL_context: sdl2.GLContext,
+    window_GL_context: sdl2.GLContext,
     window_width, window_height: i32,
     window_title: string,
     delta: f32,
@@ -43,8 +43,6 @@ engine_init :: proc(window_width, window_height: i32, window_title: string) {
    
     engine_runtime.window_GL_context = sdl2.GL_CreateContext(engine_runtime.window)
     utils.assert_log(engine_runtime.window_GL_context != nil, sdl2.GetErrorString())
-    engine_runtime.init_GL_context= sdl2.GL_CreateContext(engine_runtime.window)
-    utils.assert_log(engine_runtime.init_GL_context != nil, sdl2.GetErrorString())
     
     // opengl stuff
     sdl2.GL_SetAttribute(.CONTEXT_MAJOR_VERSION, 4);
@@ -53,8 +51,8 @@ engine_init :: proc(window_width, window_height: i32, window_title: string) {
     sdl2.GL_SetAttribute(.SHARE_WITH_CURRENT_CONTEXT, 1);
     sdl2.GL_SetAttribute(.DOUBLEBUFFER, 1);
     sdl2.GL_SetAttribute(.DEPTH_SIZE, 24);
-    sdl2.GL_MakeCurrent(engine_runtime.window, engine_runtime.init_GL_context)
-    gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
+    // you have to set the context to null in the main thread unless it won't work
+    sdl2.GL_MakeCurrent(engine_runtime.window, nil)
     
     engine_runtime.running = true // set to true just to run the first iteration
 }
@@ -70,6 +68,7 @@ engine_init_render :: proc() {
     defer sync.unlock(&engine_runtime.mutex)
     
     sdl2.GL_MakeCurrent(engine_runtime.window, engine_runtime.window_GL_context)
+    gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
 }
 
 engine_update :: proc() {
