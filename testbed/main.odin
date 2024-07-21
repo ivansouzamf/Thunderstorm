@@ -3,17 +3,17 @@ package testbed
 import "core:math/rand"
 import "core:thread"
 import "core:os"
+import "thunderstorm:utils"
 import "thunderstorm:core"
 import "thunderstorm:graphics"
 import gl "thunderstorm:graphics/opengl"
-import "thunderstorm:utils"
 
 main :: proc() {
     core.engine_init(800, 600, "thunderstorm testbed")
     defer core.engine_deinit()
 
     render_thread := thread.create_and_start(testbed_render)
-    
+
     for core.engine_running() {
         core.engine_update()
     }
@@ -35,9 +35,9 @@ testbed_render :: proc() {
     gl.UseProgram(program_id)
 
     vertices := [?]f32{
-        // vertices          // colors
+        // vertices       // colors
          0.0,  0.5, 0.0,  0.0, 0.0, 1.0, // top middle
-         
+
          0.5, -0.5, 0.0,  0.0, 1.0, 0.0, // bottom right
 
         -0.5, -0.5, 0.0,  1.0, 0.0, 0.0, // bottom left
@@ -58,19 +58,19 @@ testbed_render :: proc() {
 
     gl.VertexArrayAttribBinding(vertex_array, 0, 0);
     gl.VertexArrayAttribBinding(vertex_array, 1, 0);
-    
+
     for core.engine_running() {
         r := rand.float32()
         g := rand.float32()
         b := rand.float32()
         gl.ClearColor(r, g, b, 1.0)
-        
+
         gl.Clear(gl.COLOR_BUFFER_BIT)
-        
+
         gl.BindVertexArray(vertex_array)
         gl.DrawArrays(gl.TRIANGLES, 0, 3)
         gl.BindVertexArray(0)
-        
+
         core.engine_display()
     }
 }
