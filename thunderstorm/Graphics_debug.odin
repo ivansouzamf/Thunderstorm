@@ -1,9 +1,8 @@
-package graphics
+package thunderstorm
 
-import "../utils"
-import gl "../graphics/opengl"
+import gl "./opengl"
 
-check_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c" (u32, u32, [^]i32), log_proc: proc "c" (u32, i32, ^i32, [^]u8)) -> b8 {
+Graphics_check_gl_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c" (u32, u32, [^]i32), log_proc: proc "c" (u32, i32, ^i32, [^]u8)) -> b8 {
     result, log_len: i32
     
     iv_proc(id, status, &result)
@@ -15,9 +14,9 @@ check_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c
         log_proc(id, log_len, nil, raw_data(error_message))
         
         if log_proc == gl.GetShaderInfoLog {
-            utils.log(.Error, "OpenGL shader error. type: %v, error: %s", type, string(error_message))
+            log(.Error, "OpenGL shader error. type: %v, error: %s", type, string(error_message))
         } else if log_proc == gl.GetProgramInfoLog {
-            utils.log(.Error, "OpenGL program error. type %v, error: %s", type, string(error_message))
+            log(.Error, "OpenGL program error. type %v, error: %s", type, string(error_message))
         } else {
         }
 

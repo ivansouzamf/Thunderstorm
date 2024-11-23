@@ -3,35 +3,33 @@ package testbed
 import "core:math/rand"
 import "core:thread"
 import "core:os"
-import "thunderstorm:utils"
-import "thunderstorm:core"
-import "thunderstorm:graphics"
-import gl "thunderstorm:graphics/opengl"
+import thstm"../thunderstorm"
+import gl "../thunderstorm/opengl"
 
 main :: proc() {
-    core.engine_init(800, 600, "thunderstorm testbed")
-    defer core.engine_deinit()
+    thstm.Core_init(800, 600, "thunderstorm testbed")
+    defer thstm.Core_deinit()
 
     render_thread := thread.create_and_start(testbed_render)
 
-    for core.engine_running() {
-        core.engine_update()
+    for thstm.Core_is_running() {
+        thstm.Core_update()
     }
 }
 
 testbed_render :: proc() {
-    core.engine_init_render()
+    thstm.Core_init_render()
 
     err: bool
     vs_shader: []byte
     fg_shader: []byte
     vs_shader, err = os.read_entire_file_from_filename("default.vert.glsl.spv")
-    utils.assert_log(err, "Faild to load vertex shader")
+    thstm.assert_log(err, "Faild to load vertex shader")
     fg_shader, err = os.read_entire_file_from_filename("default.frag.glsl.spv")
-    utils.assert_log(err, "Faild to load fragment shader")
+    thstm.assert_log(err, "Faild to load fragment shader")
 
-    program_id, error := graphics.load_shader_spirv(raw_data(vs_shader), raw_data(fg_shader), len(vs_shader), len(fg_shader))
-    utils.assert_log(bool(error), "Faild to create program")
+    program_id, error := thstm.Graphics_load_shader_spirv(raw_data(vs_shader), raw_data(fg_shader), len(vs_shader), len(fg_shader))
+    thstm.assert_log(bool(error), "Faild to create program")
     gl.UseProgram(program_id)
 
     vertices := [?]f32{
@@ -59,7 +57,7 @@ testbed_render :: proc() {
     gl.VertexArrayAttribBinding(vertex_array, 0, 0);
     gl.VertexArrayAttribBinding(vertex_array, 1, 0);
 
-    for core.engine_running() {
+    for thstm.Core_is_running() {
         r := rand.float32()
         g := rand.float32()
         b := rand.float32()
@@ -71,6 +69,6 @@ testbed_render :: proc() {
         gl.DrawArrays(gl.TRIANGLES, 0, 3)
         gl.BindVertexArray(0)
 
-        core.engine_display()
+        thstm.Core_display()
     }
 }

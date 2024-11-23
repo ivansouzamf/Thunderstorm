@@ -1,4 +1,4 @@
-package utils
+package thunderstorm
 
 import "core:fmt"
 import "core:strings"
@@ -44,6 +44,7 @@ log :: proc(level: Log_Level, message: string, args: ..any) {
     fmt.fprintfln(output, "[%s] [%s] %s", log_str, get_time_str(), message)
 }
 
+@(private)
 get_time_str :: proc() -> string {
     hours, minutes, seconds := time.clock(time.now())
     

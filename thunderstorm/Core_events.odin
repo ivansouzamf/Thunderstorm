@@ -1,8 +1,6 @@
-package core
+package thunderstorm
 
 import "vendor:sdl2"
-import "../utils"
-import gl "../graphics/opengl"
 
 @(private)
 process_events :: proc() {
@@ -31,7 +29,7 @@ process_events :: proc() {
                     engine_runtime.window_width = window_event.data1
                     engine_runtime.window_height = window_event.data2
 
-                    utils.log(.Info, "The window has been resized. New size: %v X %v", engine_runtime.window_width, engine_runtime.window_height)
+                    log(.Info, "The window has been resized. New size: %v X %v", engine_runtime.window_width, engine_runtime.window_height)
                 }
             }
 
@@ -46,7 +44,7 @@ process_events :: proc() {
                 keyboard_input.index += 1
 
                 key_state_str := get_state_str(keyboard_event.state)
-                utils.log(.Info, "Keyboard input detected. Key %v has been %v", keyboard_event.keysym.sym, key_state_str)
+                log(.Info, "Keyboard input detected. Key %v has been %v", keyboard_event.keysym.sym, key_state_str)
             }
 
             // mouse events
@@ -56,7 +54,7 @@ process_events :: proc() {
                     mouse_motion_event.y,
                 }
 
-                utils.log(.Info, "The cursor moved. New position: %v X %v", mouse_motion_event.x, mouse_motion_event.y)
+                log(.Info, "The cursor moved. New position: %v X %v", mouse_motion_event.x, mouse_motion_event.y)
             }
             case .MOUSEBUTTONDOWN: fallthrough
             case .MOUSEBUTTONUP: {
@@ -71,12 +69,12 @@ process_events :: proc() {
                     case sdl2.BUTTON_MIDDLE: button_str = "middle"
                     case sdl2.BUTTON_RIGHT: button_str = "right"
                 }
-                utils.log(.Info, "Mouse input detected. Button %v has been %v", button_str, button_state_str)
+                log(.Info, "Mouse input detected. Button %v has been %v", button_str, button_state_str)
             }
             case .MOUSEWHEEL: {
                 engine_runtime.input.mouse_wheel = mouse_wheel_event.y
 
-                utils.log(.Info, "Mouse input detected. Wheel has been scrolled %v units", mouse_wheel_event.y)
+                log(.Info, "Mouse input detected. Wheel has been scrolled %v units", mouse_wheel_event.y)
             }
         }
     }

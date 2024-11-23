@@ -1,4 +1,4 @@
-package core
+package thunderstorm
 
 import "vendor:sdl2"
 
