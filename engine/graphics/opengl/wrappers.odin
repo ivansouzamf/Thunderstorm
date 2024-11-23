@@ -510,23 +510,24 @@ ProgramUniform4d :: proc "c" (program: u32, location: i32, v0: f64, v1: f64, v2:
 ProgramUniform4dv :: proc "c" (program: u32, location: i32, count: i32, value: [^]f64) { impl_ProgramUniform4dv(program, location, count, value) }
 ProgramUniform4ui :: proc "c" (program: u32, location: i32, v0: u32, v1: u32, v2: u32, v3: u32) { impl_ProgramUniform4ui(program, location, v0 , v1, v2, v3) }
 ProgramUniform4uiv :: proc "c" (program: u32, location: i32, count: i32, value: [^]u32) { impl_ProgramUniform4uiv(program, location, count, value) }
-ProgramUniformMatrix2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix2fv(program, location, count, transpose, value) }
-ProgramUniformMatrix3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix3fv(program, location, count, transpose, value) }
-ProgramUniformMatrix4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix2dv(program, location, count, transpose, value) }
-ProgramUniformMatrix3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix3dv(program, location, count, transpose, value) }
-ProgramUniformMatrix4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix4dv(program, location, count, transpose, value) }
-ProgramUniformMatrix2x3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix2x3fv(program, location, count, transpose, value) }
-ProgramUniformMatrix3x2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix3x2fv(program, location, count, transpose, value) }
-ProgramUniformMatrix2x4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix2x4fv(program, location, count, transpose, value) }
-ProgramUniformMatrix4x2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix4x2fv(program, location, count, transpose, value) }
-ProgramUniformMatrix3x4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix3x4fv(program, location, count, transpose, value) }
-ProgramUniformMatrix4x3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32)  { impl_ProgramUniformMatrix4x3fv(program, location, count, transpose, value) }
-ProgramUniformMatrix2x3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix2x3dv(program, location, count, transpose, value) }
-ProgramUniformMatrix3x2dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix3x2dv(program, location, count, transpose, value) }
-ProgramUniformMatrix2x4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix2x4dv(program, location, count, transpose, value) }
-ProgramUniformMatrix4x2dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix4x2dv(program, location, count, transpose, value) }
-ProgramUniformMatrix3x4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix3x4dv(program, location, count, transpose, value) }
-ProgramUniformMatrix4x3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64)  { impl_ProgramUniformMatrix4x3dv(program, location, count, transpose, value) }
+ProgramUniformMatrix2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix2fv(program, location, count, transpose, value) }
+ProgramUniformMatrix3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix3fv(program, location, count, transpose, value) }
+ProgramUniformMatrix4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix4fv(program, location, count, transpose, value) }
+ProgramUniformMatrix2dv   :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix2dv(program, location, count, transpose, value) }
+ProgramUniformMatrix3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix3dv(program, location, count, transpose, value) }
+ProgramUniformMatrix4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix4dv(program, location, count, transpose, value) }
+ProgramUniformMatrix2x3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix2x3fv(program, location, count, transpose, value) }
+ProgramUniformMatrix3x2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix3x2fv(program, location, count, transpose, value) }
+ProgramUniformMatrix2x4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix2x4fv(program, location, count, transpose, value) }
+ProgramUniformMatrix4x2fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix4x2fv(program, location, count, transpose, value) }
+ProgramUniformMatrix3x4fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix3x4fv(program, location, count, transpose, value) }
+ProgramUniformMatrix4x3fv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f32) { impl_ProgramUniformMatrix4x3fv(program, location, count, transpose, value) }
+ProgramUniformMatrix2x3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix2x3dv(program, location, count, transpose, value) }
+ProgramUniformMatrix3x2dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix3x2dv(program, location, count, transpose, value) }
+ProgramUniformMatrix2x4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix2x4dv(program, location, count, transpose, value) }
+ProgramUniformMatrix4x2dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix4x2dv(program, location, count, transpose, value) }
+ProgramUniformMatrix3x4dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix3x4dv(program, location, count, transpose, value) }
+ProgramUniformMatrix4x3dv :: proc "c" (program: u32, location: i32, count: i32, transpose: bool, value: [^]f64) { impl_ProgramUniformMatrix4x3dv(program, location, count, transpose, value) }
 ValidateProgramPipeline   :: proc "c" (pipeline: u32) { impl_ValidateProgramPipeline(pipeline) }
 GetProgramPipelineInfoLog :: proc "c" (pipeline: u32, bufSize: i32, length: ^i32, infoLog: [^]u8) { impl_GetProgramPipelineInfoLog(pipeline, bufSize, length, infoLog) }
 VertexAttribL1d :: proc "c" (index: u32, x: f64) { impl_VertexAttribL1d(index, x) }
