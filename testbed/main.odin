@@ -3,7 +3,7 @@ package testbed
 import "core:math/rand"
 import "core:thread"
 import "core:os"
-import thstm"../thunderstorm"
+import thstm "../thunderstorm"
 import gl "../thunderstorm/opengl"
 
 main :: proc() {
