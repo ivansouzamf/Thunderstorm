@@ -44,12 +44,15 @@ Core_init :: proc(window_width, window_height: i32, window_title: string) {
     assert_log(engine_runtime.window_GL_context != nil, sdl2.GetErrorString())
     
     // opengl stuff
-    sdl2.GL_SetAttribute(.CONTEXT_MAJOR_VERSION, 4);
-    sdl2.GL_SetAttribute(.CONTEXT_MINOR_VERSION, 6);
-    sdl2.GL_SetAttribute(.CONTEXT_PROFILE_MASK, i32(sdl2.GLprofile.CORE));
-    sdl2.GL_SetAttribute(.SHARE_WITH_CURRENT_CONTEXT, 1);
-    sdl2.GL_SetAttribute(.DOUBLEBUFFER, 1);
-    sdl2.GL_SetAttribute(.DEPTH_SIZE, 24);
+    sdl2.GL_SetAttribute(.CONTEXT_MAJOR_VERSION, 4)
+    sdl2.GL_SetAttribute(.CONTEXT_MINOR_VERSION, 6)
+    sdl2.GL_SetAttribute(.CONTEXT_PROFILE_MASK, i32(sdl2.GLprofile.CORE))
+    when ODIN_DEBUG {
+        sdl2.GL_SetAttribute(.CONTEXT_FLAGS, i32(sdl2.GLcontextFlag.DEBUG_FLAG))
+    }
+    sdl2.GL_SetAttribute(.SHARE_WITH_CURRENT_CONTEXT, 1)
+    sdl2.GL_SetAttribute(.DOUBLEBUFFER, 1)
+    sdl2.GL_SetAttribute(.DEPTH_SIZE, 24)
     // you have to set the context to null in the main thread unless it won't work
     sdl2.GL_MakeCurrent(engine_runtime.window, nil)
     
@@ -68,6 +71,11 @@ Core_init_render :: proc() {
     
     sdl2.GL_MakeCurrent(engine_runtime.window, engine_runtime.window_GL_context)
     gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
+    when ODIN_DEBUG {
+        gl.Enable(gl.DEBUG_OUTPUT)
+        gl.Enable(gl.DEBUG_OUTPUT_SYNCHRONOUS)
+        gl.DebugMessageCallback(gl_debug_callback, nil)
+    }
 }
 
 Core_update :: proc() {
