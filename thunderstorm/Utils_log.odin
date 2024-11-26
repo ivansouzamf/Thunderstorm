@@ -34,6 +34,9 @@ log :: proc(level: Log_Level, message: string, args: ..any) {
         case .Fatal: log_str = "FATAL"
     }
     
+    buff: [time.MIN_HMS_LEN]byte
+    time_str := time.to_string_hms(time.now(), buff[:])
+ 
     output: os.Handle
     if u8(level) > 1 {
         output = os.stderr
@@ -41,17 +44,5 @@ log :: proc(level: Log_Level, message: string, args: ..any) {
         output = os.stdout
     }
 
-    fmt.fprintfln(output, "[%s] [%s] %s", log_str, get_time_str(), message)
-}
-
-@(private)
-get_time_str :: proc() -> string {
-    hours, minutes, seconds := time.clock(time.now())
-    
-    buff: [32]byte
-    str_builder := strings.builder_from_bytes(buff[:])
-    
-    fmt.sbprintf(&str_builder, "%02d:%02d:%02d", hours, minutes, seconds)
-    
-    return strings.to_string(str_builder)
+    fmt.fprintfln(output, "[%s] [%s] %s", log_str, time_str, message)
 }
