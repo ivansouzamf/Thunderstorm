@@ -20,23 +20,32 @@ process_events :: proc() {
                 case: return "???"
             }
         }
+        
+        get_button_str :: proc(button: u8) -> string {
+        	switch button {
+	            case sdl2.BUTTON_LEFT: return "left"
+	            case sdl2.BUTTON_MIDDLE: return "middle"
+	            case sdl2.BUTTON_RIGHT: return "right"
+	            case: return "???"
+            }
+        }
 
         #partial switch event.type {
             // window events
-            case .QUIT: engine_runtime.running = false
+            case .QUIT: g_engine_runtime.running = false
             case .WINDOWEVENT: {
                 if window_event.event == .RESIZED {
-                    engine_runtime.window_width = window_event.data1
-                    engine_runtime.window_height = window_event.data2
+                    g_engine_runtime.window_width = window_event.data1
+                    g_engine_runtime.window_height = window_event.data2
 
-                    log(.Info, "The window has been resized. New size: %v X %v", engine_runtime.window_width, engine_runtime.window_height)
+                    log(.Info, "The window has been resized. New size: %v X %v", g_engine_runtime.window_width, g_engine_runtime.window_height)
                 }
             }
 
             // keyboard events
             case .KEYDOWN: fallthrough
             case .KEYUP: {
-                keyboard_input := &engine_runtime.input.keyboard
+                keyboard_input := &g_engine_runtime.input.keyboard
                 i := keyboard_input.index
                 keyboard_input.state[i] = auto_cast(keyboard_event.state)
                 keyboard_input.keycode[i] = auto_cast(keyboard_event.keysym.sym)
@@ -49,7 +58,7 @@ process_events :: proc() {
 
             // mouse events
             case .MOUSEMOTION: {
-                engine_runtime.input.mouse_pos = {
+                g_engine_runtime.input.mouse_pos = {
                     mouse_motion_event.x,
                     mouse_motion_event.y,
                 }
@@ -58,21 +67,16 @@ process_events :: proc() {
             }
             case .MOUSEBUTTONDOWN: fallthrough
             case .MOUSEBUTTONUP: {
-                mouse_button_input := &engine_runtime.input.mouse_button
+                mouse_button_input := &g_engine_runtime.input.mouse_button
                 mouse_button_input.state[mouse_button_input.index] = auto_cast(mouse_button_event.state)
                 mouse_button_input.index += 1
 
+                button_str := get_button_str(mouse_button_event.button)
                 button_state_str := get_state_str(mouse_button_event.state)
-                button_str: string
-                switch mouse_button_event.button {
-                    case sdl2.BUTTON_LEFT: button_str = "left"
-                    case sdl2.BUTTON_MIDDLE: button_str = "middle"
-                    case sdl2.BUTTON_RIGHT: button_str = "right"
-                }
                 log(.Info, "Mouse input detected. Button %v has been %v", button_str, button_state_str)
             }
             case .MOUSEWHEEL: {
-                engine_runtime.input.mouse_wheel = mouse_wheel_event.y
+                g_engine_runtime.input.mouse_wheel = mouse_wheel_event.y
 
                 log(.Info, "Mouse input detected. Wheel has been scrolled %v units", mouse_wheel_event.y)
             }

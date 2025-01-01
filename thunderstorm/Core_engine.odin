@@ -6,7 +6,7 @@ import "vendor:sdl2"
 import gl "./opengl"
 
 @(private)
-engine_runtime: struct {
+g_engine_runtime: struct {
     window: ^sdl2.Window,
     window_GL_context: sdl2.GLContext,
     window_width, window_height: i32,
@@ -25,23 +25,23 @@ engine_runtime: struct {
 }
 
 Core_init :: proc(window_width, window_height: i32, window_title: string) {
-    assert_log(!engine_runtime.running, "You can't call '%v' twice", #location().procedure)
+    assert_log(!g_engine_runtime.running, "You can't call '%v' twice", #location().procedure)
     
     defer free_all(context.temp_allocator)
 
     err := sdl2.Init(sdl2.INIT_VIDEO) 
     assert_log(err == 0, sdl2.GetErrorString())
 
-    engine_runtime.window_width = window_width
-    engine_runtime.window_height = window_height
-    engine_runtime.window_title = window_title
+    g_engine_runtime.window_width = window_width
+    g_engine_runtime.window_height = window_height
+    g_engine_runtime.window_title = window_title
 
     window_title_cstr, alloc_err := strings.clone_to_cstring(window_title, context.temp_allocator)
-    engine_runtime.window = sdl2.CreateWindow(window_title_cstr, sdl2.WINDOWPOS_CENTERED, sdl2.WINDOWPOS_CENTERED, window_width, window_height, sdl2.WINDOW_OPENGL | sdl2.WINDOW_SHOWN | sdl2.WINDOW_RESIZABLE)
-    assert_log(engine_runtime.window != nil, sdl2.GetErrorString())
+    g_engine_runtime.window = sdl2.CreateWindow(window_title_cstr, sdl2.WINDOWPOS_CENTERED, sdl2.WINDOWPOS_CENTERED, window_width, window_height, sdl2.WINDOW_OPENGL | sdl2.WINDOW_SHOWN | sdl2.WINDOW_RESIZABLE)
+    assert_log(g_engine_runtime.window != nil, sdl2.GetErrorString())
    
-    engine_runtime.window_GL_context = sdl2.GL_CreateContext(engine_runtime.window)
-    assert_log(engine_runtime.window_GL_context != nil, sdl2.GetErrorString())
+    g_engine_runtime.window_GL_context = sdl2.GL_CreateContext(g_engine_runtime.window)
+    assert_log(g_engine_runtime.window_GL_context != nil, sdl2.GetErrorString())
     
     // opengl stuff
     sdl2.GL_SetAttribute(.CONTEXT_MAJOR_VERSION, 4)
@@ -54,22 +54,22 @@ Core_init :: proc(window_width, window_height: i32, window_title: string) {
     sdl2.GL_SetAttribute(.DOUBLEBUFFER, 1)
     sdl2.GL_SetAttribute(.DEPTH_SIZE, 24)
     // you have to set the context to null in the main thread unless it won't work
-    sdl2.GL_MakeCurrent(engine_runtime.window, nil)
+    sdl2.GL_MakeCurrent(g_engine_runtime.window, nil)
     
-    engine_runtime.running = true // set to true just to run the first iteration
+    g_engine_runtime.running = true // set to true just to run the first iteration
 }
 
 Core_deinit :: proc() {
-    sdl2.GL_DeleteContext(engine_runtime.window_GL_context)
-    sdl2.DestroyWindow(engine_runtime.window)
+    sdl2.GL_DeleteContext(g_engine_runtime.window_GL_context)
+    sdl2.DestroyWindow(g_engine_runtime.window)
     sdl2.Quit()
 }
 
 Core_init_render :: proc() {
-    sync.lock(&engine_runtime.mutex)
-    defer sync.unlock(&engine_runtime.mutex)
+    sync.lock(&g_engine_runtime.mutex)
+    defer sync.unlock(&g_engine_runtime.mutex)
     
-    sdl2.GL_MakeCurrent(engine_runtime.window, engine_runtime.window_GL_context)
+    sdl2.GL_MakeCurrent(g_engine_runtime.window, g_engine_runtime.window_GL_context)
     gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
     when ODIN_DEBUG {
         gl.Enable(gl.DEBUG_OUTPUT)
@@ -79,7 +79,7 @@ Core_init_render :: proc() {
 }
 
 Core_update :: proc() {
-    engine_runtime.input = {} // resets input
+    g_engine_runtime.input = {} // resets input
     process_events()
 }
 
@@ -87,17 +87,17 @@ Core_display :: proc() {
     @(static) window_width: i32
     @(static) window_height: i32
 
-    if window_width != engine_runtime.window_width || window_height != engine_runtime.window_height {
-        sync.lock(&engine_runtime.mutex)
-        defer sync.unlock(&engine_runtime.mutex)
-        window_width = engine_runtime.window_width
-        window_height = engine_runtime.window_height
+    if window_width != g_engine_runtime.window_width || window_height != g_engine_runtime.window_height {
+        sync.lock(&g_engine_runtime.mutex)
+        defer sync.unlock(&g_engine_runtime.mutex)
+        window_width = g_engine_runtime.window_width
+        window_height = g_engine_runtime.window_height
         gl.Viewport(0, 0, window_width, window_height)
     }
 
-    sdl2.GL_SwapWindow(engine_runtime.window)
+    sdl2.GL_SwapWindow(g_engine_runtime.window)
 }
 
 Core_is_running :: proc() -> b8 {
-    return engine_runtime.running
+    return g_engine_runtime.running
 }
