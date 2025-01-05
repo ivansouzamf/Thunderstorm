@@ -1,25 +1,31 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set /A build_shaders = 0
-set shaders[0]=default.frag.glsl
-set shaders[1]=default.vert.glsl
+set program_name=testbed.exe
+set shader_dir=.\thunderstorm\shaders
+set build_dir=.\bin
+set build_flags=
 
 if "%1" == "debug" (
-    echo --- Building in debug mode ---
-    odin build ./testbed -out:./bin/testbed.exe -debug
-    set /A build_shaders = 1
+	echo --- Building in debug mode ---
+	set build_flags=-debug
 ) else if "%1" == "release" (
-    echo --- Building in release mode ---
-    odin build ./testbed -out:./bin/testbed.exe -subsystem:windows -o:speed
-    set /A build_shaders = 1
+	echo --- Building in release mode ---
+	set build_flags=-subsystem:windows -o:speed
+) else if "%1" == "run" (
+	echo --- Running %program_name% ---
+	%build_dir%\%program_name%
+	goto :end
 ) else (
-    echo You have to provide a valid build mode. Either 'debug' or 'release'
+	echo Invalid command. Use 'debug', 'release' or 'run'
+	goto :end
 )
 
-if %build_shaders% == 1 (
-    echo --- Building shaders ---
-    for /l %%i in (0, 1, 1) do (
-        glslang --target-env opengl -V thunderstorm\shaders\!shaders[%%i]! -o bin\!shaders[%%i]!.spv
-    )
+echo --- Building shaders ---
+for %%f in ("%shader_dir%\*") do (
+	glslang --target-env opengl -V %shader_dir%\%%~nxf -o bin\%%~nxf.spv
 )
+
+odin build .\testbed -out:%build_dir%\%program_name% %build_flags%
+
+:end

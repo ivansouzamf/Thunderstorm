@@ -1,24 +1,31 @@
 #!/bin/sh
 
-build_shaders=0
-shaders[0]="default.frag.glsl"
-shaders[1]="default.vert.glsl"
+program_name="testbed"
+shader_dir="./thunderstorm/shaders"
+build_dir="./bin"
+build_flags=""
 
 if [ "$1" == "debug" ]; then
     echo "--- Building in debug mode ---"
-    odin build ./testbed -out:./bin/testbed -debug
-    build_shaders=1
+    build_flags="-debug"
 elif [ "$1" == "release" ]; then
     echo "--- Building in release mode ---"
-    odin build ./testbed -out:./bin/testbed -o:speed
-    build_shaders=1
-else 
-    echo "You have to provide a valid build mode. Either 'debug' or 'release'"
+    build_flags="-o:speed"
+elif [ "$1" == "run" ]; then
+    echo "--- Running $program_name ---"
+    $build_dir/$program_name
+    exit $?
+else
+    echo "Invalid command. Use 'debug', 'release' or 'run'"
+    exit -1 
 fi
 
-if [ $build_shaders -eq 1 ]; then
-    echo "--- Building shaders ---"
-    for i in "${shaders[@]}"; do
-        glslang --target-env opengl -V thunderstorm/shaders/"$i" -o bin/"$i".spv
-    done
-fi
+echo "--- Building shaders ---"
+for file in "$shader_dir"/*; do
+	f=$(basename "$file")
+	glslang --target-env opengl -V $shader_dir/$f -o bin/$f.spv
+done
+
+odin build ./testbed -out:$build_dir/$program_name $build_flags
+
+exit $?
