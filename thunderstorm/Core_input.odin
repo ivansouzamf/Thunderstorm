@@ -7,11 +7,11 @@ Input_State :: enum {
     Released,
 }
 
-Mouse_Pos_Input :: struct { x, y: i32 }
+Mouse_Pos_Input :: distinct [2]i32
 
 Mouse_Button_Input :: struct {
     state: [8]Input_State,
-    index : u8,
+    index: u8,
 }
 
 Keyboard_Input :: struct {

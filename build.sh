@@ -22,8 +22,8 @@ fi
 
 echo "--- Building shaders ---"
 for file in "$shader_dir"/*; do
-	f=$(basename "$file")
-	glslang --target-env opengl -V $shader_dir/$f -o bin/$f.spv
+    f=$(basename "$file")
+    glslang --target-env opengl -G $shader_dir/$f -o bin/$f.spv
 done
 
 odin build ./testbed -out:$build_dir/$program_name $build_flags

@@ -23,7 +23,7 @@ if "%1" == "debug" (
 
 echo --- Building shaders ---
 for %%f in ("%shader_dir%\*") do (
-	glslang --target-env opengl -V %shader_dir%\%%~nxf -o bin\%%~nxf.spv
+	glslang --target-env opengl -G %shader_dir%\%%~nxf -o bin\%%~nxf.spv
 )
 
 odin build .\testbed -out:%build_dir%\%program_name% %build_flags%
