@@ -3,7 +3,7 @@ package thunderstorm
 import gl "./opengl"
 import "base:runtime"
 
-Graphics_check_gl_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c" (u32, u32, [^]i32), log_proc: proc "c" (u32, i32, ^i32, [^]u8)) -> b8 {
+Graphics_check_gl_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c" (u32, u32, [^]i32), log_proc: proc "c" (u32, i32, ^i32, [^]u8)) -> bool {
     result, log_len: i32
     
     iv_proc(id, status, &result)

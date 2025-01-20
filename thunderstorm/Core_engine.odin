@@ -13,7 +13,7 @@ g_engine_runtime: struct {
     window_width, window_height: i32,
     window_title: string,
     delta: f32,
-    running: b8,
+    running: bool,
 
     input: struct {
         keyboard: Keyboard_Input,
@@ -103,6 +103,6 @@ Core_display :: proc() {
     sdl2.GL_SwapWindow(g_engine_runtime.window)
 }
 
-Core_is_running :: proc() -> b8 {
+Core_is_running :: proc() -> bool {
     return g_engine_runtime.running
 }

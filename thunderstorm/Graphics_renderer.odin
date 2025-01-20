@@ -7,18 +7,11 @@ import gl "./opengl"
 @(private)
 g_renderer_runtime: struct {
 	initialized: bool,
-	bounds: [2]f32,
-	
-	vert_shader, frag_shader: []byte,
-	
-	projection: linalg.Matrix4x4f32,
-	transform: linalg.Matrix4x4f32,
 	
 	textures: []Texture, // NOTE: the first texture is a blank texture used for drawing single color shapes
-	texture_idx: u32,
-	
 	quad_vertexes: []Quad_Vertex,
 	quad_indexes: []Quad_Index,
+	texture_idx: u32,
 	quad_idx: u32,
 	
 	index_buffer: u32,
@@ -28,6 +21,7 @@ g_renderer_runtime: struct {
 	
 	max_quads: i32,
 	max_textures: i32,
+	bounds: [2]f32,
 }
 
 @(private)
@@ -51,6 +45,7 @@ is_texture_used :: proc(in_texture: Texture) -> (u32, bool) {
 	return 0, false
 }
 
+@(private)
 normalize_texture_rect :: proc(rect: Rect, texture: Texture) -> Rect {
 	w := f32(texture.w)
 	h := f32(texture.h)
@@ -75,12 +70,9 @@ Graphics_begin_batch :: proc() {
 		
 		runtime.textures[0] = load_blank_texture()
 		runtime.texture_idx = 1
-	    
-		runtime.vert_shader = #load("../bin/batch.vert.glsl.spv")
-		runtime.frag_shader = #load("../bin/batch.frag.glsl.spv")
 		
 		ok: bool
-		runtime.program, ok = Graphics_load_shader_spirv(raw_data(runtime.vert_shader), raw_data(runtime.frag_shader), len(runtime.vert_shader), len(runtime.frag_shader))
+		runtime.program, ok = Graphics_load_shader_spirv(raw_data(VERT_SHADER), raw_data(FRAG_SHADER), len(VERT_SHADER), len(FRAG_SHADER))
 		assert_log(ok, "Couldn't load shader")
 		
 		gl.CreateBuffers(1, &runtime.vertex_buffer)
@@ -115,12 +107,17 @@ Graphics_flush_batch :: proc() {
 	// TODO: only reconstruct the matrix on screen resize
 	a := 2 / runtime.bounds.x
 	b := 2 / runtime.bounds.y
-	runtime.projection = linalg.Matrix4x4f32 {
+	projection := linalg.Matrix4x4f32 {
 		a, 0, 0, -1,
 	 	0, b, 0, -1,
 		0, 0, 1,  0,
 		0, 0, 0,  1,
 	}
+	
+	transform := linalg.Matrix4x4f32 {}
+	
+	gl.ProgramUniformMatrix4fv(runtime.program, PROJECTION_LOC, 1, false, &projection[0][0])
+	//gl.ProgramUniformMatrix4fv(runtime.program, TRANSFORM_LOC, 1, false, &transform[0][0])
 	
 	gl.NamedBufferSubData(runtime.vertex_buffer, 0, size_of(Quad_Vertex) * int(runtime.max_quads), raw_data(runtime.quad_vertexes))
 	gl.NamedBufferSubData(runtime.index_buffer, 0, size_of(Quad_Index) * int(runtime.max_quads), raw_data(runtime.quad_indexes))
@@ -132,8 +129,6 @@ Graphics_flush_batch :: proc() {
 	gl.UseProgram(runtime.program)
 	gl.BindVertexArray(runtime.vertex_array)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, runtime.index_buffer)
-	gl.UniformMatrix4fv(PROJECTION_LOC, 1, false, &runtime.projection[0][0])
-	//gl.UniformMatrix4fv(TRANSFORM_LOC, 1, false, &runtime.transform[0][0])
 	gl.DrawElements(gl.TRIANGLES, i32(runtime.quad_idx) * 6, gl.UNSIGNED_INT, nil)
 
 	runtime.texture_idx = 1
@@ -194,6 +189,10 @@ Vertex :: struct #packed {
 Quad_Vertex :: distinct [4]Vertex
 Quad_Index :: distinct [6]u32
 
+// shaders data
+@(private) VERT_SHADER :: #load("../bin/batch.vert.glsl.spv")
+@(private) FRAG_SHADER :: #load("../bin/batch.frag.glsl.spv")
+
 // NOTE:
 // ARB_gl_spirv
 // 23. How does setting uniforms work if we can’t query for locations based on
@@ -205,5 +204,5 @@ Quad_Index :: distinct [6]u32
 // (e.g. Uniform*, ProgramUniform*).
 
 // shader uniform locations
-PROJECTION_LOC :: 0
-TRANSFORM_LOC :: 1
+@(private) PROJECTION_LOC :: 0
+@(private) TRANSFORM_LOC :: 1
