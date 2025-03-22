@@ -20,13 +20,13 @@ process_events :: proc() {
                 case: return "???"
             }
         }
-        
+
         get_button_str :: proc(button: u8) -> string {
-        	switch button {
-	            case sdl2.BUTTON_LEFT: return "left"
-	            case sdl2.BUTTON_MIDDLE: return "middle"
-	            case sdl2.BUTTON_RIGHT: return "right"
-	            case: return "???"
+            switch button {
+	        case sdl2.BUTTON_LEFT: return "left"
+	        case sdl2.BUTTON_MIDDLE: return "middle"
+	        case sdl2.BUTTON_RIGHT: return "right"
+	        case: return "???"
             }
         }
 
@@ -53,7 +53,7 @@ process_events :: proc() {
                 keyboard_input.index += 1
 
                 key_state_str := get_state_str(keyboard_event.state)
-                log(.Info, "Keyboard input detected. Key %v has been %v", keyboard_event.keysym.sym, key_state_str)
+                log(.Info, "Keyboard input detected. Key %v has been %w", keyboard_event.keysym.sym, key_state_str)
             }
 
             // mouse events

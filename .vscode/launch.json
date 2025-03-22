@@ -7,7 +7,7 @@
             "name": "Debug",
             "program": "${workspaceFolder}/bin/testbed",
             "args": [],
-            "cwd": "${workspaceFolder}/bin"
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

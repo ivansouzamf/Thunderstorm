@@ -27,7 +27,7 @@ g_engine_runtime: struct {
 
 Core_init :: proc(window_width, window_height: i32, window_title: string) {
     assert_log(!g_engine_runtime.running, "You can't call '%v' twice", #location().procedure)
-    
+
     defer free_all(context.temp_allocator)
 
     err := sdl2.Init(sdl2.INIT_VIDEO)
@@ -36,11 +36,11 @@ Core_init :: proc(window_width, window_height: i32, window_title: string) {
     g_engine_runtime.window_width = window_width
     g_engine_runtime.window_height = window_height
     g_engine_runtime.window_title = window_title
-    
+
     window_title_cstr, alloc_err := strings.clone_to_cstring(window_title, context.temp_allocator)
     g_engine_runtime.window = sdl2.CreateWindow(window_title_cstr, sdl2.WINDOWPOS_CENTERED, sdl2.WINDOWPOS_CENTERED, window_width, window_height, sdl2.WINDOW_OPENGL | sdl2.WINDOW_SHOWN | sdl2.WINDOW_RESIZABLE)
     assert_log(g_engine_runtime.window != nil, sdl2.GetErrorString())
-   
+
     // opengl stuff
     sdl2.GL_SetAttribute(.CONTEXT_MAJOR_VERSION, 4)
     sdl2.GL_SetAttribute(.CONTEXT_MINOR_VERSION, 6)
@@ -51,13 +51,13 @@ Core_init :: proc(window_width, window_height: i32, window_title: string) {
     sdl2.GL_SetAttribute(.SHARE_WITH_CURRENT_CONTEXT, 1)
     sdl2.GL_SetAttribute(.DOUBLEBUFFER, 1)
     sdl2.GL_SetAttribute(.DEPTH_SIZE, 24)
-    
+
     g_engine_runtime.window_GL_context = sdl2.GL_CreateContext(g_engine_runtime.window)
     assert_log(g_engine_runtime.window_GL_context != nil, sdl2.GetErrorString())
-    
+
     // you have to set the context to null in the main thread unless it won't work
     sdl2.GL_MakeCurrent(g_engine_runtime.window, nil)
-    
+
     g_engine_runtime.running = true // set to true just to run the first iteration
 }
 
@@ -70,11 +70,11 @@ Core_deinit :: proc() {
 Core_init_renderer :: proc() {
     sync.lock(&g_engine_runtime.mutex)
     defer sync.unlock(&g_engine_runtime.mutex)
-    
+
     img_flags := sdl2img.InitFlags { .PNG, . JPG }
     res := sdl2img.Init(img_flags)
     assert_log(res == img_flags, sdl2.GetErrorString())
-    
+
     sdl2.GL_MakeCurrent(g_engine_runtime.window, g_engine_runtime.window_GL_context)
     gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
     when ODIN_DEBUG {
@@ -82,7 +82,7 @@ Core_init_renderer :: proc() {
         gl.Enable(gl.DEBUG_OUTPUT_SYNCHRONOUS)
         gl.DebugMessageCallback(gl_debug_callback, nil)
     }
-    
+
 	get_renderer_limits()
 }
 
@@ -92,7 +92,7 @@ Core_update :: proc() {
 }
 
 Core_display :: proc() {
-	current := [2]f32 { f32(g_engine_runtime.window_width), f32(g_engine_runtime.window_width) }
+	current := [2]f32 { f32(g_engine_runtime.window_width), f32(g_engine_runtime.window_height) }
     if current != g_renderer_runtime.bounds {
         sync.lock(&g_engine_runtime.mutex)
         defer sync.unlock(&g_engine_runtime.mutex)

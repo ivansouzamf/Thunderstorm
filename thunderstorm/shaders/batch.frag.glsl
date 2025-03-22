@@ -1,4 +1,4 @@
-#version 460
+#version 460 core
 
 layout(location = 0) in vec2 v_texture;
 layout(location = 1) in float v_texture_idx;
