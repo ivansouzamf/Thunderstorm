@@ -3,7 +3,6 @@ package thunderstorm
 import "core:sync"
 import "core:strings"
 import "vendor:sdl2"
-import sdl2img "vendor:sdl2/image"
 import gl "./opengl"
 
 @(private)
@@ -70,10 +69,6 @@ Core_deinit :: proc() {
 Core_init_renderer :: proc() {
     sync.lock(&g_engine_runtime.mutex)
     defer sync.unlock(&g_engine_runtime.mutex)
-
-    img_flags := sdl2img.InitFlags { .PNG, . JPG }
-    res := sdl2img.Init(img_flags)
-    assert_log(res == img_flags, sdl2.GetErrorString())
 
     sdl2.GL_MakeCurrent(g_engine_runtime.window, g_engine_runtime.window_GL_context)
     gl.load_up_to(4, 6, sdl2.gl_set_proc_address)

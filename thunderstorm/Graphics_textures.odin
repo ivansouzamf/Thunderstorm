@@ -2,30 +2,23 @@ package thunderstorm
 
 import "core:strings"
 import "core:slice"
+import "core:image/png"
+import "core:image/qoi"
+import "core:image"
 import "vendor:sdl2"
-import sdl2img "vendor:sdl2/image"
 import gl "./opengl"
 
 Graphics_load_image_from_disk :: proc(path: string, allocator := context.allocator) -> Image {
-	path_cstr := strings.clone_to_cstring(path)
-	defer delete(path_cstr)
-	
-	surface := sdl2img.Load(path_cstr)
-	defer sdl2.FreeSurface(surface)
-	rbga_surface := sdl2.ConvertSurfaceFormat(surface, u32(sdl2.PixelFormatEnum.RGBA8888), 0)
-	defer sdl2.FreeSurface(rbga_surface)
-	
-	data_size := size_of(u8) * 4 * int(rbga_surface.w * rbga_surface.h)
-	data_slice := slice.bytes_from_ptr(rbga_surface.pixels, data_size)
-	slice.reverse(data_slice) // fixes format being inverted (ABGR -> RGBA)
-	
-	image := Image {
-		slice.clone(data_slice, allocator),
-		rbga_surface.w,
-		rbga_surface.h,
+	img, err := image.load_from_file(path, { .alpha_add_if_missing }, allocator)
+	assert_log(err == nil, "Could not load image: %s. Reason: %v", path, err)
+
+	res := Image {
+		img.pixels.buf[:],
+		i32(img.width),
+		i32(img.height),
 	}
-	
-	return image
+
+	return res
 }
 
 // NOTE: all textures must be in RGBA8 format
@@ -38,13 +31,13 @@ Graphics_load_texture_from_image :: proc(image: Image, filtering: Texture_Filter
 	gl.TextureParameteri(texture_id, gl.TEXTURE_MAG_FILTER, i32(filtering))
 	gl.TextureStorage2D(texture_id, 1, gl.RGBA8, image.w, image.h)
 	gl.TextureSubImage2D(texture_id, 0, 0, 0, image.w, image.h, gl.RGBA, gl.UNSIGNED_BYTE, raw_data(image.data))
-	
+
 	texture := Texture {
 		texture_id,
 		u32(image.w),
 		u32(image.h),
 	}
-	
+
 	return texture
 }
 
@@ -52,13 +45,13 @@ Graphics_load_texture_from_image :: proc(image: Image, filtering: Texture_Filter
 load_blank_texture :: proc() -> Texture {
 	texture := 0xffffffff
 	texture_data := slice.bytes_from_ptr(&texture, size_of(u32))
-	
-	image := Image { 
+
+	image := Image {
 		texture_data,
 		1,
 		1,
 	}
-	
+
 	return Graphics_load_texture_from_image(image, .Nearest)
 }
 
