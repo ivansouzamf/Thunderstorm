@@ -148,7 +148,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture) {
 
 	texture_idx, used := is_texture_used(texture)
 
-	if runtime.quad_idx > u32(runtime.max_quads) || runtime.texture_idx > u32(runtime.max_textures) && !used {
+	if runtime.quad_idx >= u32(runtime.max_quads) || runtime.texture_idx >= u32(runtime.max_textures) && !used {
 		Graphics_flush_batch()
 	}
 
@@ -162,9 +162,9 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture) {
 	source := normalize_texture_rect(source, texture)
 
 	top_left := Vertex { { target.x, target.y }, { source.x, source.y }, f32(texture_idx) }
-	top_right:= Vertex { { target.x + target.w, target.y }, { source.x + source.w, source.y }, f32(texture_idx) }
+	top_right := Vertex { { target.x + target.w, target.y }, { source.x + source.w, source.y }, f32(texture_idx) }
 	bottom_left := Vertex { { target.x, target.y + target.h }, { source.x, source.y + source.h }, f32(texture_idx) }
-	bottom_right := Vertex { { target.x + target.w, target.y + target.h }, { source.x + source.w, source.y + source.y + source.h }, f32(texture_idx) }
+	bottom_right := Vertex { { target.x + target.w, target.y + target.h }, { source.x + source.w, source.y + source.h }, f32(texture_idx) }
 
 	vertex := Quad_Vertex {
 		top_left,
