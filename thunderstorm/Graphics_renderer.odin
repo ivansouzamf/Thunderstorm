@@ -102,6 +102,9 @@ Graphics_begin_batch :: proc() {
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 0, 0)
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 1, 0)
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 2, 0)
+
+		gl.Enable(gl.BLEND)
+		gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	}
 }
 
