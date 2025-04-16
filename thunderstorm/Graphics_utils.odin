@@ -18,10 +18,10 @@ color_to_gl :: proc(color: Color) -> GL_Color {
 
 Graphics_color_from_hex :: proc(color: u32) -> Color {
 	res := Color {
-		r = u8(color >> 24) & 0xff,
-		g = u8(color >> 16) & 0xff,
-		b = u8(color >> 8) & 0xff,
-		a = u8(color) & 0xff,
+		r = u8(color >> 24) & 255,
+		g = u8(color >> 16) & 255,
+		b = u8(color >> 8) & 255,
+		a = u8(color) & 255,
 	}
 
 	return res
