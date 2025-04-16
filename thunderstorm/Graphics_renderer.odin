@@ -60,6 +60,12 @@ normalize_texture_rect :: proc(rect: Rect, texture: Texture) -> Rect {
 	return normalized_rect
 }
 
+Graphics_clear_color :: proc(color: Color) {
+	clr := color_to_gl(color)
+	gl.ClearColor(clr.r, clr.g, clr.b, clr.a)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+}
+
 Graphics_begin_batch :: proc() {
 	runtime := &g_renderer_runtime
 

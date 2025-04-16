@@ -1,10 +1,9 @@
-package testbed 
+package testbed
 
 import "core:math/rand"
 import "core:thread"
 import "core:os"
 import thstm "../thunderstorm"
-import gl "../thunderstorm/opengl"
 
 main :: proc() {
     thstm.Core_init(800, 600, "thunderstorm testbed")
@@ -22,14 +21,11 @@ testbed_render :: proc() {
 
     image := thstm.Graphics_load_image_from_disk("texture.png")
     texture := thstm.Graphics_load_texture_from_image(image, .Nearest)
-    
+
     for thstm.Core_is_running() {
-        r := rand.float32()
-        g := rand.float32()
-        b := rand.float32()
-        gl.ClearColor(r, g, b, 1.0)
-        gl.Clear(gl.COLOR_BUFFER_BIT)
-        
+        color := thstm.Graphics_color_from_hex(0x6C96D500)
+        thstm.Graphics_clear_color(color)
+
         thstm.Graphics_begin_batch()
         for i in 0 ..= 10 {
             thstm.Graphics_draw_textured_rect({ f32(i) * 74, 200, 64, 64 }, { 0, 0, 64, 64 }, texture)

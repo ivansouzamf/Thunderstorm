@@ -83,7 +83,7 @@ Core_init_renderer :: proc() {
         gl.DebugMessageCallback(gl_debug_callback, nil)
     }
 
-	get_renderer_limits()
+    get_renderer_limits()
 }
 
 Core_update :: proc() {
@@ -92,7 +92,7 @@ Core_update :: proc() {
 }
 
 Core_display :: proc() {
-	current := [2]f32 { f32(g_engine_runtime.window_width), f32(g_engine_runtime.window_height) }
+    current := [2]f32 { f32(g_engine_runtime.window_width), f32(g_engine_runtime.window_height) }
     if current != g_renderer_runtime.bounds {
         sync.lock(&g_engine_runtime.mutex)
         defer sync.unlock(&g_engine_runtime.mutex)
