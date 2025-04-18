@@ -3,3 +3,7 @@ build/
 bin/
 compile_commands.json
 .DS_Store
+*.png
+*.qoi
+*.jpg
+*.jpeg
