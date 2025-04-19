@@ -32,6 +32,7 @@ testbed_render :: proc() {
         current_time := thstm.Core_get_perf_counter()
         delta := f32(current_time - last_time) / f32(frequency)
         fps := 1.0 / delta
+        if last_time == 0 do delta = 0
         last_time = current_time
 
         color := thstm.Graphics_color_from_hex(0x6C96D500)
@@ -39,7 +40,7 @@ testbed_render :: proc() {
 
         thstm.Graphics_begin_batch()
         {
-            //benchmark_test(texture)
+            benchmark_test(texture)
             simple_test(texture, delta)
         }
         thstm.Graphics_end_batch()
@@ -51,11 +52,19 @@ testbed_render :: proc() {
 simple_test :: proc(texture: thstm.Texture, delta: f32) {
     red := thstm.Graphics_color_from_hex(0xff00007f)
     @(static) rotate: f32
-    rotate += delta * 2.5
+    rotate += delta * 15
     
     for i in 0 ..= 10 {
-        transform := glsl.mat4Rotate({ 0, 0, 1 }, glsl.radians(rotate))
-        thstm.Graphics_draw_rect({ f32(i) * 74, 200, 64, 64 }, red, transform)
+        quad := thstm.Rect { f32(i) * 74, 200, 64, 64 }
+        
+        cx := quad.x + quad.w / 2
+        cy := quad.y + quad.h / 2
+        tmat1 := glsl.mat4Translate({ cx, cy, 0 })
+        tmat2 := glsl.mat4Translate({ -cx, -cy, 0 })
+        rmat := glsl.mat4Rotate({ 0, 0, 1 }, glsl.radians(-rotate))
+        
+        transform := tmat1 * rmat * tmat2
+        thstm.Graphics_draw_rect(quad, red, transform)
     }
 }
 
