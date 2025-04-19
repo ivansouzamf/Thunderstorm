@@ -5,13 +5,6 @@ import "core:strings"
 import "core:time"
 import "core:os"
 
-Log_Level :: enum u8 {
-    Info = 0,
-    Warn = 1,
-    Error = 2, // NOTE: if the error can make the program crash prefer to use '.Fatal'
-    Fatal = 3,
-}
-
 assert_log :: proc(expression: bool, message: string, args: ..any, loc := #caller_location) {
     if !expression {
         log(.Fatal, message, ..args)
@@ -45,4 +38,11 @@ log :: proc(level: Log_Level, message: string, args: ..any) {
     }
 
     fmt.fprintfln(output, "[%s] [%s] %s", log_str, time_str, message)
+}
+
+Log_Level :: enum u8 {
+    Info = 0,
+    Warn = 1,
+    Error = 2, // NOTE: if the error can make the program crash prefer to use '.Fatal'
+    Fatal = 3,
 }

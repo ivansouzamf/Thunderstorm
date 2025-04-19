@@ -3,6 +3,7 @@ package testbed
 import "core:math/rand"
 import "core:thread"
 import "core:os"
+import "core:math/linalg/glsl"
 import thstm "../thunderstorm"
 
 main :: proc() {
@@ -23,23 +24,38 @@ testbed_render :: proc() {
     image := thstm.Graphics_load_image_from_disk("sprite.png")
     texture := thstm.Graphics_load_texture_from_image(image, .Nearest)
 
+    frequency := thstm.Core_get_perf_frequency()
     for thstm.Core_is_running() {
+        // calc delta && fps
+        @(static)
+        last_time: u64
+        current_time := thstm.Core_get_perf_counter()
+        delta := f32(current_time - last_time) / f32(frequency)
+        fps := 1.0 / delta
+        last_time = current_time
+
         color := thstm.Graphics_color_from_hex(0x6C96D500)
         thstm.Graphics_clear_color(color)
 
         thstm.Graphics_begin_batch()
-        benchmark_test(texture)
-        simple_test(texture)
+        {
+            //benchmark_test(texture)
+            simple_test(texture, delta)
+        }
         thstm.Graphics_end_batch()
 
         thstm.Core_display()
     }
 }
 
-simple_test :: proc(texture: thstm.Texture) {
+simple_test :: proc(texture: thstm.Texture, delta: f32) {
+    red := thstm.Graphics_color_from_hex(0xff00007f)
+    @(static) rotate: f32
+    rotate += delta * 2.5
+    
     for i in 0 ..= 10 {
-        red := thstm.Graphics_color_from_hex(0xff00007f)
-        thstm.Graphics_draw_rect({ f32(i) * 74, 200, 64, 64 }, red)
+        transform := glsl.mat4Rotate({ 0, 0, 1 }, glsl.radians(rotate))
+        thstm.Graphics_draw_rect({ f32(i) * 74, 200, 64, 64 }, red, transform)
     }
 }
 

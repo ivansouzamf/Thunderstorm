@@ -11,7 +11,6 @@ g_engine_runtime: struct {
     window_GL_context: sdl2.GLContext,
     window_width, window_height: i32,
     window_title: string,
-    delta: f32,
     running: bool,
 
     input: struct {
@@ -101,4 +100,12 @@ Core_display :: proc() {
 
 Core_is_running :: proc() -> bool {
     return g_engine_runtime.running
+}
+
+Core_get_perf_frequency :: proc() -> u64 {
+    return sdl2.GetPerformanceFrequency()
+}
+
+Core_get_perf_counter :: proc() -> u64 {
+    return sdl2.GetPerformanceCounter()
 }
