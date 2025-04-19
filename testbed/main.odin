@@ -28,8 +28,8 @@ testbed_render :: proc() {
         thstm.Graphics_clear_color(color)
 
         thstm.Graphics_begin_batch()
-        //simple_test(texture)
         benchmark_test(texture)
+        simple_test(texture)
         thstm.Graphics_end_batch()
 
         thstm.Core_display()
@@ -38,7 +38,8 @@ testbed_render :: proc() {
 
 simple_test :: proc(texture: thstm.Texture) {
     for i in 0 ..= 10 {
-        thstm.Graphics_draw_textured_rect({ f32(i) * 74, 200, 64, 64 }, { 0, 0, 64, 64 }, texture)
+        red := thstm.Graphics_color_from_hex(0xff00007f)
+        thstm.Graphics_draw_rect({ f32(i) * 74, 200, 64, 64 }, red)
     }
 }
 
@@ -53,6 +54,8 @@ benchmark_test :: proc(spritesheet: thstm.Texture) {
     // sprite count
     max_sprites :: 2048
     max_spritesheets :: max_sprites / spritesheet_sprites_number
+
+    white := thstm.Graphics_color_from_hex(0xffffffff)
 
     for i in 0 ..< max_spritesheets {
         column: u32
@@ -79,7 +82,7 @@ benchmark_test :: proc(spritesheet: thstm.Texture) {
                 break
             }
 
-            thstm.Graphics_draw_textured_rect(target, source, spritesheet)
+            thstm.Graphics_draw_textured_rect(target, source, spritesheet, white)
         }
     }
 }

@@ -22,6 +22,8 @@ g_renderer_runtime: struct {
 	max_quads: i32,
 	max_textures: i32,
 	bounds: [2]f32,
+
+	default_texture: Texture,
 }
 
 @(private)
@@ -29,7 +31,7 @@ get_renderer_limits :: proc() {
 	runtime := &g_renderer_runtime
 
 	gl.GetIntegerv(gl.MAX_TEXTURE_IMAGE_UNITS, &runtime.max_textures)
-	runtime.max_quads = runtime.max_textures * 32
+	runtime.max_quads = 2560
 }
 
 @(private)
@@ -75,8 +77,9 @@ Graphics_begin_batch :: proc() {
 		runtime.quad_vertexes = make([]Quad_Vertex, runtime.max_quads)
 		runtime.quad_indexes = make([]Quad_Index, runtime.max_quads)
 		runtime.textures = make([]Texture, runtime.max_textures)
-
-		runtime.textures[0] = load_blank_texture()
+		
+		runtime.default_texture = load_blank_texture() 
+		runtime.textures[0] = runtime.default_texture
 		runtime.texture_idx = 1
 
 		ok: bool
@@ -93,16 +96,19 @@ Graphics_begin_batch :: proc() {
 		gl.VertexArrayVertexBuffer(runtime.vertex_array, 0, runtime.vertex_buffer, 0, size_of(Vertex))
 		gl.EnableVertexArrayAttrib(runtime.vertex_array, 0) // position
 		gl.EnableVertexArrayAttrib(runtime.vertex_array, 1) // texture (uv coords)
-		gl.EnableVertexArrayAttrib(runtime.vertex_array, 2) // texture index
+		gl.EnableVertexArrayAttrib(runtime.vertex_array, 2) // color 
+		gl.EnableVertexArrayAttrib(runtime.vertex_array, 3) // texture index
 
 		gl.VertexArrayAttribFormat(runtime.vertex_array, 0, 2, gl.FLOAT, false, 0) // position
 		gl.VertexArrayAttribFormat(runtime.vertex_array, 1, 2, gl.FLOAT, true, size_of([2]f32)) // texture (uv coords)
-		gl.VertexArrayAttribFormat(runtime.vertex_array, 2, 1, gl.FLOAT, false, size_of([2]f32) + size_of([2]f32)) // texture index
+		gl.VertexArrayAttribFormat(runtime.vertex_array, 2, 4, gl.FLOAT, true, size_of([2]f32) + size_of([2]f32)) // color
+		gl.VertexArrayAttribFormat(runtime.vertex_array, 3, 1, gl.FLOAT, false, size_of([2]f32) + size_of([2]f32) + size_of(GL_Color)) // texture index
 
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 0, 0)
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 1, 0)
 		gl.VertexArrayAttribBinding(runtime.vertex_array, 2, 0)
-
+		gl.VertexArrayAttribBinding(runtime.vertex_array, 3, 0)
+		
 		gl.Enable(gl.BLEND)
 		gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	}
@@ -120,15 +126,12 @@ Graphics_flush_batch :: proc() {
 	b := 2 / runtime.bounds.y
 	projection := linalg.Matrix4x4f32 {
 		a, 0, 0, -1,
-	 	0, b, 0, -1,
+		0, b, 0, -1,
 		0, 0, 1,  0,
 		0, 0, 0,  1,
 	}
 
-	transform := linalg.Matrix4x4f32 {}
-
 	gl.ProgramUniformMatrix4fv(runtime.program, PROJECTION_LOC, 1, false, &projection[0][0])
-	//gl.ProgramUniformMatrix4fv(runtime.program, TRANSFORM_LOC, 1, false, &transform[0][0])
 
 	gl.NamedBufferSubData(runtime.vertex_buffer, 0, size_of(Quad_Vertex) * int(runtime.max_quads), raw_data(runtime.quad_vertexes))
 	gl.NamedBufferSubData(runtime.index_buffer, 0, size_of(Quad_Index) * int(runtime.max_quads), raw_data(runtime.quad_indexes))
@@ -146,7 +149,7 @@ Graphics_flush_batch :: proc() {
 	runtime.quad_idx = 0
 }
 
-Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture) {
+Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, color: Color) {
 	runtime := &g_renderer_runtime
 
 	texture_idx, used := is_texture_used(texture)
@@ -163,11 +166,13 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture) {
 
 	// normalize texture coordinates
 	source := normalize_texture_rect(source, texture)
-
-	top_left := Vertex { { target.x, target.y }, { source.x, source.y }, f32(texture_idx) }
-	top_right := Vertex { { target.x + target.w, target.y }, { source.x + source.w, source.y }, f32(texture_idx) }
-	bottom_left := Vertex { { target.x, target.y + target.h }, { source.x, source.y + source.h }, f32(texture_idx) }
-	bottom_right := Vertex { { target.x + target.w, target.y + target.h }, { source.x + source.w, source.y + source.h }, f32(texture_idx) }
+	gl_color := color_to_gl(color)  
+	ftexture_idx := f32(texture_idx)
+	
+	top_left := Vertex { { target.x, target.y }, { source.x, source.y }, gl_color, ftexture_idx }
+	top_right := Vertex { { target.x + target.w, target.y }, { source.x + source.w, source.y }, gl_color, ftexture_idx }
+	bottom_left := Vertex { { target.x, target.y + target.h }, { source.x, source.y + source.h }, gl_color, ftexture_idx }
+	bottom_right := Vertex { { target.x + target.w, target.y + target.h }, { source.x + source.w, source.y + source.h }, gl_color, ftexture_idx }
 
 	vertex := Quad_Vertex {
 		top_left,
@@ -187,6 +192,18 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture) {
 	runtime.quad_idx += 1
 }
 
+Graphics_draw_rect :: proc(target: Rect, color: Color) {
+	runtime := &g_renderer_runtime
+
+	source := Rect {
+		0, 0,
+		f32(runtime.default_texture.w),
+		f32(runtime.default_texture.h),
+	}
+
+	Graphics_draw_textured_rect(target, source, runtime.default_texture, color)
+}
+
 Rect :: struct {
 	x, y, w, h: f32,
 }
@@ -194,6 +211,7 @@ Rect :: struct {
 Vertex :: struct #packed {
 	position: [2]f32,
 	texture: [2]f32,
+	color: GL_Color,
 	texture_idx: f32,
 }
 

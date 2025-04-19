@@ -71,6 +71,7 @@ Core_init_renderer :: proc() {
     defer sync.unlock(&g_engine_runtime.mutex)
 
     sdl2.GL_MakeCurrent(g_engine_runtime.window, g_engine_runtime.window_GL_context)
+    sdl2.GL_SetSwapInterval(0)
     gl.load_up_to(4, 6, sdl2.gl_set_proc_address)
     when ODIN_DEBUG {
         gl.Enable(gl.DEBUG_OUTPUT)
