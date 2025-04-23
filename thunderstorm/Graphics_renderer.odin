@@ -196,7 +196,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 	top_left := Vertex {
 		transform,
 		{ target.x, target.y },
-		{ source.x, source.y },
+		{ source.x, source.y + source.h },
 		gl_color,
 		ftexture_idx
 	}
@@ -204,7 +204,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 	top_right := Vertex {
 		transform,
 		{ target.x + target.w, target.y },
-		{ source.x + source.w, source.y },
+		{ source.x + source.w, source.y + source.h },
 		gl_color,
 		ftexture_idx,
 	}
@@ -212,7 +212,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 	bottom_left := Vertex {
 		transform,
 		{ target.x, target.y + target.h },
-		{ source.x, source.y + source.h },
+		{ source.x, source.y },
 		gl_color,
 		ftexture_idx,
 	}
@@ -220,7 +220,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 	bottom_right := Vertex {
 		transform,
 		{ target.x + target.w, target.y + target.h },
-		{ source.x + source.w, source.y + source.h },
+		{ source.x + source.w, source.y },
 		gl_color,
 		ftexture_idx,
 	}
@@ -228,13 +228,13 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 	vertex := Quad_Vertex {
 		top_left,
 		top_right,
-		bottom_right,
 		bottom_left,
+		bottom_right,
 	}
 
 	index := Quad_Index {
-		1, 2, 0,
-		0, 3, 2,
+		1, 3, 0,
+		0, 2, 3,
 	}
 	index += runtime.quad_idx * 4
 

@@ -38,7 +38,7 @@ testbed_render :: proc() {
 
         color := thstm.Graphics_color_from_hex(0x6C96D500)
         thstm.Graphics_clear_color(color)
-
+        
         thstm.Graphics_begin_batch()
         {
             benchmark_test(texture)
