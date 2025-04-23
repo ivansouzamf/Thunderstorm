@@ -151,7 +151,11 @@ Graphics_flush_batch :: proc() {
 		0, 0, 0,  1,
 	}
 	
-	gl.ProgramUniformMatrix4fv(runtime.program, PROJECTION_LOC, 1, false, &projection[0][0])
+	// NOTE: OpenGL seems to have problems with 'Matrices vs Vecs' when uploading data to the gpu.
+	// I still don't know what causes this, should probably try to research this a bit more later.
+	// Anyway passing every Matrix as Vecs seems to fix the problems, at least on amd drivers.
+	gl.ProgramUniform4fv(runtime.program, PROJECTION_LOC, 4, &projection[0][0])
+	//gl.ProgramUniformMatrix4fv(runtime.program, PROJECTION_LOC, 1, false, &projection[0][0])
 
 	gl.NamedBufferSubData(runtime.vertex_buffer, 0, size_of(Quad_Vertex) * int(runtime.max_quads), raw_data(runtime.quad_vertexes))
 	gl.NamedBufferSubData(runtime.index_buffer, 0, size_of(Quad_Index) * int(runtime.max_quads), raw_data(runtime.quad_indexes))

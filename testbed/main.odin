@@ -11,11 +11,12 @@ main :: proc() {
     defer thstm.Core_deinit()
 
     render_thread := thread.create_and_start(testbed_render)
-    thread.join(render_thread)
 
     for thstm.Core_is_running() {
         thstm.Core_update()
     }
+    
+    thread.join(render_thread)
 }
 
 testbed_render :: proc() {
