@@ -186,7 +186,7 @@ Graphics_draw_textured_rect :: proc(target, source: Rect, texture: Texture, colo
 
 	// normalize texture coordinates, convert color format, cast index to float
 	source := normalize_texture_rect(source, texture)
-	gl_color := color_to_gl(color)  
+	gl_color := color_to_gl(color)
 	ftexture_idx := f32(texture_idx)
 	
 	top_left := Vertex {
@@ -251,21 +251,28 @@ Graphics_draw_rect :: proc(target: Rect, color: Color, transform := glsl.mat4(1)
 	Graphics_draw_textured_rect(target, source, runtime.default_texture, color, transform)
 }
 
-// Graphics_draw_line :: proc(start, end: [2]f32, thickness: f32, color: Color) {
-// 	runtime := &g_renderer_runtime
-//
-// 	source := Rect {
-// 		0, 0,
-// 		f32(runtime.default_texture.w),
-// 		f32(runtime.default_texture.h),
-// 	}
-//
-// 	target := Rect {
-// 		?, ?,
-// 		thickness,
-// 		thickness,
-// 	}
-// }
+Graphics_draw_line :: proc(start, end: [2]f32, thickness: f32, color: Color) {
+	runtime := &g_renderer_runtime
+
+	adj := start.x - end.x
+	opp := start.y - end.y
+	angle := glsl.atan(opp / adj)
+
+	tmat1 := glsl.mat4Translate({ start.x, start.y, 0 })
+	tmat2 := glsl.mat4Translate({ -start.x, -start.y, 0 })
+	rmat := glsl.mat4Rotate({ 0, 0, 1 }, angle)
+	
+	transform := tmat1 * rmat * tmat2
+	
+	size := glsl.distance(start, end)
+
+	target := Rect {
+		start.x, start.y,
+		size, thickness,
+	}
+
+	Graphics_draw_rect(target, color, transform)
+}
 
 Rect :: struct {
 	x, y, w, h: f32,

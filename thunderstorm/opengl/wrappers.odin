@@ -229,7 +229,7 @@ UniformMatrix4x3fv :: proc "c" (location: i32, count: i32, transpose: bool, valu
 ColorMaski :: proc "c" (index: u32, r: bool, g: bool, b: bool, a: bool) { impl_ColorMaski(index, r, g, b, a) }
 GetBooleani_v :: proc "c" (target: u32, index: u32, data: ^bool) { impl_GetBooleani_v(target, index, data) }
 GetIntegeri_v :: proc "c" (target: u32, index: u32, data: ^i32) { impl_GetIntegeri_v(target, index, data) }
-Enablei :: proc "c" (target: u32, index: u32) { impl_Enablei(target, index)                                                                            }
+Enablei :: proc "c" (target: u32, index: u32) { impl_Enablei(target, index) }
 Disablei :: proc "c" (target: u32, index: u32) { impl_Disablei(target, index) }
 IsEnabledi :: proc "c" (target: u32, index: u32) -> bool { ret := impl_IsEnabledi(target, index); return ret }
 BeginTransformFeedback :: proc "c" (primitiveMode: u32) { impl_BeginTransformFeedback(primitiveMode) }
@@ -326,10 +326,10 @@ GetActiveUniformBlockName :: proc "c" (program: u32, uniformBlockIndex: u32, buf
 UniformBlockBinding :: proc "c" (program: u32, uniformBlockIndex: u32, uniformBlockBinding: u32) { impl_UniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding) }
 
 // VERSION_3_2
-DrawElementsBaseVertex :: proc "c" (mode: u32, count: i32, type: u32, indices: rawptr, basevertex: i32)                                            {        impl_DrawElementsBaseVertex(mode, count, type, indices, basevertex)                                                }
-DrawRangeElementsBaseVertex :: proc "c" (mode: u32, start: u32, end: u32, count: i32, type: u32, indices: rawptr, basevertex: i32)                      {        impl_DrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex)                               }
-DrawElementsInstancedBaseVertex :: proc "c" (mode: u32, count: i32, type: u32, indices: rawptr, instancecount: i32, basevertex: i32)                        {        impl_DrawElementsInstancedBaseVertex(mode, count, type, indices, instancecount, basevertex)                        }
-MultiDrawElementsBaseVertex :: proc "c" (mode: u32, count: [^]i32, type: u32, indices: [^]rawptr, drawcount: i32, basevertex: [^]i32)                   {        impl_MultiDrawElementsBaseVertex(mode, count, type, indices, drawcount, basevertex)                                }
+DrawElementsBaseVertex :: proc "c" (mode: u32, count: i32, type: u32, indices: rawptr, basevertex: i32) { impl_DrawElementsBaseVertex(mode, count, type, indices, basevertex) }
+DrawRangeElementsBaseVertex :: proc "c" (mode: u32, start: u32, end: u32, count: i32, type: u32, indices: rawptr, basevertex: i32) { impl_DrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex) }
+DrawElementsInstancedBaseVertex :: proc "c" (mode: u32, count: i32, type: u32, indices: rawptr, instancecount: i32, basevertex: i32) { impl_DrawElementsInstancedBaseVertex(mode, count, type, indices, instancecount, basevertex) }
+MultiDrawElementsBaseVertex :: proc "c" (mode: u32, count: [^]i32, type: u32, indices: [^]rawptr, drawcount: i32, basevertex: [^]i32) { impl_MultiDrawElementsBaseVertex(mode, count, type, indices, drawcount, basevertex) }
 ProvokingVertex :: proc "c" (mode: u32) { impl_ProvokingVertex(mode) }
 FenceSync :: proc "c" (condition: u32, flags: u32) -> sync_t { ret := impl_FenceSync(condition, flags); return ret }
 IsSync :: proc "c" (sync: sync_t) -> bool { ret := impl_IsSync(sync); return ret }
@@ -472,7 +472,7 @@ ProgramBinary :: proc "c" (program: u32, binaryFormat: u32, binary: rawptr, leng
 ProgramParameteri :: proc "c" (program: u32, pname: u32, value: i32) { impl_ProgramParameteri(program, pname, value) }
 UseProgramStages :: proc "c" (pipeline: u32, stages: u32, program: u32) { impl_UseProgramStages(pipeline, stages, program) }
 ActiveShaderProgram :: proc "c" (pipeline: u32, program: u32) { impl_ActiveShaderProgram(pipeline, program) }
-CreateShaderProgramv :: proc "c" (type: u32, count: i32, strings: [^]cstring) -> u32 { ret := impl_CreateShaderProgramv(type, count, strings);                             return ret }
+CreateShaderProgramv :: proc "c" (type: u32, count: i32, strings: [^]cstring) -> u32 { ret := impl_CreateShaderProgramv(type, count, strings); return ret }
 BindProgramPipeline :: proc "c" (pipeline: u32) { impl_BindProgramPipeline(pipeline) }
 DeleteProgramPipelines :: proc "c" (n: i32, pipelines: [^]u32) { impl_DeleteProgramPipelines(n, pipelines) }
 GenProgramPipelines :: proc "c" (n: i32, pipelines: [^]u32) { impl_GenProgramPipelines(n, pipelines) }
@@ -690,7 +690,7 @@ TextureParameterIiv :: proc "c" (texture: u32, pname: u32, params: [^]i32) { imp
 TextureParameterIuiv :: proc "c" (texture: u32, pname: u32, params: [^]u32) { impl_TextureParameterIuiv(texture, pname, params) }
 TextureParameteriv :: proc "c" (texture: u32, pname: u32, param: ^i32) { impl_TextureParameteriv(texture, pname, param) }
 GenerateTextureMipmap :: proc "c" (texture: u32) { impl_GenerateTextureMipmap(texture) }
-BindTextureUnit :: proc "c" (unit: u32, texture: u32) {        impl_BindTextureUnit(unit, texture) }
+BindTextureUnit :: proc "c" (unit: u32, texture: u32) { impl_BindTextureUnit(unit, texture) }
 GetTextureImage :: proc "c" (texture: u32, level: i32, format: u32, type: u32, bufSize: i32, pixels: rawptr) { impl_GetTextureImage(texture, level, format, type, bufSize, pixels) }
 GetCompressedTextureImage :: proc "c" (texture: u32, level: i32, bufSize: i32, pixels: rawptr) { impl_GetCompressedTextureImage(texture, level, bufSize, pixels) }
 GetTextureLevelParameterfv :: proc "c" (texture: u32, level: i32, pname: u32, params: [^]f32) { impl_GetTextureLevelParameterfv(texture, level, pname, params) }
@@ -703,10 +703,10 @@ CreateVertexArrays :: proc "c" (n: i32, arrays: [^]u32) { impl_CreateVertexArray
 DisableVertexArrayAttrib :: proc "c" (vaobj: u32, index: u32) { impl_DisableVertexArrayAttrib(vaobj, index) }
 EnableVertexArrayAttrib :: proc "c" (vaobj: u32, index: u32) { impl_EnableVertexArrayAttrib(vaobj, index) }
 VertexArrayElementBuffer :: proc "c" (vaobj: u32, buffer: u32) { impl_VertexArrayElementBuffer(vaobj, buffer) }
-VertexArrayVertexBuffer :: proc "c" (vaobj: u32, bindingindex: u32, buffer: u32, offset: int, stride: i32) { impl_VertexArrayVertexBuffer(vaobj, bindingindex, buffer, offset, stride)                                                                     }
-VertexArrayVertexBuffers :: proc "c" (vaobj: u32, first: u32, count: i32, buffers: [^]u32, offsets: [^]uintptr, strides: [^]i32) { impl_VertexArrayVertexBuffers(vaobj, first, count, buffers, offsets, strides)                                                                 }
+VertexArrayVertexBuffer :: proc "c" (vaobj: u32, bindingindex: u32, buffer: u32, offset: int, stride: i32) { impl_VertexArrayVertexBuffer(vaobj, bindingindex, buffer, offset, stride) }
+VertexArrayVertexBuffers :: proc "c" (vaobj: u32, first: u32, count: i32, buffers: [^]u32, offsets: [^]uintptr, strides: [^]i32) { impl_VertexArrayVertexBuffers(vaobj, first, count, buffers, offsets, strides) }
 VertexArrayAttribBinding :: proc "c" (vaobj: u32, attribindex: u32, bindingindex: u32) { impl_VertexArrayAttribBinding(vaobj, attribindex, bindingindex) }
-VertexArrayAttribFormat :: proc "c" (vaobj: u32, attribindex: u32, size: i32, type: u32, normalized: bool, relativeoffset: u32) { impl_VertexArrayAttribFormat(vaobj, attribindex, size, type, normalized, relativeoffset)                                                     }
+VertexArrayAttribFormat :: proc "c" (vaobj: u32, attribindex: u32, size: i32, type: u32, normalized: bool, relativeoffset: u32) { impl_VertexArrayAttribFormat(vaobj, attribindex, size, type, normalized, relativeoffset) }
 VertexArrayAttribIFormat :: proc "c" (vaobj: u32, attribindex: u32, size: i32, type: u32, relativeoffset: u32) { impl_VertexArrayAttribIFormat(vaobj, attribindex, size, type, relativeoffset) }
 VertexArrayAttribLFormat :: proc "c" (vaobj: u32, attribindex: u32, size: i32, type: u32, relativeoffset: u32) { impl_VertexArrayAttribLFormat(vaobj, attribindex, size, type, relativeoffset) }
 VertexArrayBindingDivisor :: proc "c" (vaobj: u32, bindingindex: u32, divisor: u32) { impl_VertexArrayBindingDivisor(vaobj, bindingindex, divisor) }

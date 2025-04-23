@@ -5,7 +5,7 @@ import "base:runtime"
 
 Graphics_check_gl_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_proc: proc "c" (u32, u32, [^]i32), log_proc: proc "c" (u32, i32, ^i32, [^]u8)) -> bool {
     result, log_len: i32
-    
+
     iv_proc(id, status, &result)
     iv_proc(id, gl.INFO_LOG_LENGTH, &log_len)
 
@@ -13,7 +13,7 @@ Graphics_check_gl_error :: proc(id: u32, type: gl.Shader_Type, status: u32, iv_p
         error_message := make([]u8, log_len)
         defer delete(error_message)
         log_proc(id, log_len, nil, raw_data(error_message))
-        
+
         if log_proc == gl.GetShaderInfoLog {
             log(.Error, "OpenGL shader error. type: %v, error: %s", type, string(error_message))
         } else if log_proc == gl.GetProgramInfoLog {
