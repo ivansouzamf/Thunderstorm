@@ -1,5 +1,7 @@
 package thunderstorm
 
+import "vendor:sdl2"
+
 @(private)
 color_to_gl :: proc(color: Color) -> GL_Color {
 	convert :: #force_inline proc(v: u8) -> f32 {
@@ -14,6 +16,11 @@ color_to_gl :: proc(color: Color) -> GL_Color {
 	}
 
 	return res
+}
+
+Graphics_set_sync_mode :: proc(mode: Sync_Mode) {
+	sdl2.GL_SetSwapInterval(i32(mode))
+	log(.Info, "Changed sync mode to: %v", mode)
 }
 
 Graphics_color_from_hex :: proc(color: u32) -> Color {
@@ -33,4 +40,10 @@ Color :: struct {
 
 GL_Color :: struct {
 	r, g, b, a: f32,
+}
+
+Sync_Mode :: enum i32 {
+	None = 0,
+	Vsync = 1,
+	Adaptative = -1,
 }

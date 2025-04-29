@@ -102,6 +102,28 @@ Core_is_running :: proc() -> bool {
     return g_engine_runtime.running
 }
 
+Core_get_resolution :: proc() -> [2]u32 {
+    runtime := &g_engine_runtime
+    res := [2]u32 { u32(runtime.window_width), u32(runtime.window_height) }
+    return res
+}
+
+Core_set_resolution :: proc(res: [2]u32) {
+    sdl2.SetWindowSize(g_engine_runtime.window, i32(res.x), i32(res.y))
+}
+
+Core_get_fullscreen :: proc() -> bool {
+    fullscreen := sdl2.WindowFlag(sdl2.GetWindowFlags(g_engine_runtime.window))
+    flags := sdl2.WindowFlags { fullscreen }
+    return .FULLSCREEN in flags
+}
+
+Core_set_fullscreen :: proc(full: bool) {
+    if full {
+        sdl2.SetWindowFullscreen(g_engine_runtime.window, { .FULLSCREEN })
+    }
+}
+
 Core_get_perf_frequency :: proc() -> u64 {
     return sdl2.GetPerformanceFrequency()
 }
