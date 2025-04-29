@@ -2,17 +2,38 @@ package testbed
 
 import "core:math/rand"
 import "core:thread"
-import "core:os"
 import "core:math/linalg/glsl"
 import thstm "../thunderstorm"
+
+// TODO: move all code that requires these imports to 'Core'
+import "core:time"
+import "core:sys/windows"
 
 main :: proc() {
     thstm.Core_init(800, 600, "thunderstorm testbed")
     defer thstm.Core_deinit()
 
     render_thread := thread.create_and_start(testbed_render)
+    
+    // enable high resolution timer on windows
+    when ODIN_OS == .Windows {
+        // NOTE: apparently from windows 10 version 2004 and beyond
+        // this has no effect because the OS uses the high resolution
+        // timer by default
+        windows.timeBeginPeriod(1)
+        defer windows.timeEndPeriod(1)
+    }
 
+    frame_data := Frame_Data { frequency = thstm.Core_get_perf_frequency() }
     for thstm.Core_is_running() {
+        freq: f32 = 125.0
+        target := 1.0 / freq
+        if frame_data.delta > target do frame_data.delta = target
+        precise_sleep(target - frame_data.delta)
+        
+        defer update_frame_data(&frame_data)
+        update_frame_data(&frame_data)
+        
         thstm.Core_update()
     }
     
@@ -26,23 +47,17 @@ testbed_render :: proc() {
     image := thstm.Graphics_load_image_from_disk("sprite.png")
     texture := thstm.Graphics_load_texture_from_image(image, .Nearest)
 
-    frequency := thstm.Core_get_perf_frequency()
+    frame_data := Frame_Data { frequency = thstm.Core_get_perf_frequency() }
     for thstm.Core_is_running() {
-        // calc delta && fps
-        @(static) last_time: u64
-        current_time := thstm.Core_get_perf_counter()
-        delta := f32(current_time - last_time) / f32(frequency)
-        fps := 1.0 / delta
-        if last_time == 0 do delta = 0
-        last_time = current_time
-
+        update_frame_data(&frame_data)
+    
         color := thstm.Graphics_color_from_hex(0x6C96D500)
         thstm.Graphics_clear_color(color)
         
         thstm.Graphics_begin_batch()
         {
             benchmark_test(texture)
-            simple_test(delta)
+            simple_test(frame_data.delta)
         }
         thstm.Graphics_end_batch()
 
@@ -113,4 +128,38 @@ benchmark_test :: proc(spritesheet: thstm.Texture) {
             thstm.Graphics_draw_textured_rect(target, source, spritesheet, white)
         }
     }
+}
+
+// TODO: move this code to 'Core'
+
+precise_sleep :: proc(seconds: f32) {
+    duration := time.Duration(seconds * 1000000000.0)
+    freq := thstm.Core_get_perf_frequency()
+    
+    before := thstm.Core_get_perf_counter()
+    time.sleep(duration - 700000) // subtract 0.7ms from sleep to improve precision
+    after := thstm.Core_get_perf_counter()
+    
+    delta: f32
+    for delta <= seconds {
+        passed := f32(after - before) / f32(freq)
+        defer {
+            before = after
+            after = thstm.Core_get_perf_counter()
+        }
+        delta += passed
+    }
+}
+
+update_frame_data :: proc(data: ^Frame_Data) {
+    using data
+    current_time := thstm.Core_get_perf_counter()
+    delta = f32(current_time - last_time) / f32(frequency)
+    if last_time == 0 do delta = 0
+    last_time = current_time
+}
+
+Frame_Data :: struct {
+    delta: f32,
+    frequency, last_time: u64,
 }
